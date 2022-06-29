@@ -17,7 +17,7 @@ from googleapiclient.errors import HttpError
 '''-------------------------------------------------------------
 MY MODULES'''
 
-from config import app, db, local_address, live_address, lease_price, PAYPAL_SANDBOX_CLIENT_ID, PAYPAL_SANDBOX_CLIENT_SECRET
+from config import app, db, get_domain, lease_price, PAYPAL_SANDBOX_CLIENT_ID, PAYPAL_SANDBOX_CLIENT_SECRET
 
 from models import Videos, clear_database
 from youtube import add_uploads_to_database
@@ -26,10 +26,6 @@ from mail import send_confirmation_email
 from drive import fetch_beat_files, download_all_files, return_directory, start_folder_id
 
 from docs import export_lease, create_lease
-
-domain = live_address
-if __name__ == '__main__':
-    domain = local_address
 
 '''----------------------------------------------------------------------------------------------------
 ROUTING'''
@@ -116,8 +112,8 @@ def create_order(video_id, video_title):
             ],
             'application_context': {
                 'brand_name': 'Vince Maina',
-                'cancel_url': domain + '/beats/' + video_id, # FIX THIS
-                'return_url': domain + '/confirming', # Basically this should forward the user to a payment confirmation page where they can access their files and lease document.
+                'cancel_url': get_domain() + '/beats/' + video_id, # FIX THIS
+                'return_url': get_domain() + '/confirming', # Basically this should forward the user to a payment confirmation page where they can access their files and lease document.
                 'user_action': 'PAY_NOW'
             }
         }

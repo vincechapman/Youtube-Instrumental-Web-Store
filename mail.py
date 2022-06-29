@@ -16,10 +16,8 @@ import io
 '''-------------------------
 MY MODULES'''
 from credentials import creds
-from config import sender_address, live_address
+from config import sender_address, get_domain
 from drive import drive_service
-
-domain = live_address
 
 def send_confirmation_email(order_id, beat_name, video_title, recipient_address, lease_id):
 
@@ -28,7 +26,7 @@ def send_confirmation_email(order_id, beat_name, video_title, recipient_address,
         message = EmailMessage()
 
         body = \
-            f"Order Id: {order_id}\n\nBeat: {beat_name}\nVideo name: {video_title}\n\nDownload your files here: {domain}/{order_id}/{lease_id}/receipt"
+            f"Order Id: {order_id}\n\nBeat: {beat_name}\nVideo name: {video_title}\n\nDownload your files and lease agreement here: {get_domain()}/{order_id}/{lease_id}/receipt\n\nFeel free to reply directly to this email if you have any questions!\n\n— Vince"
 
         message.set_content(body)
 

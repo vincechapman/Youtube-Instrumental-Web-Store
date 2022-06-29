@@ -19,15 +19,9 @@ from googleapiclient.errors import HttpError
 
 '''-------------------------------------------------------------------'''
 
-from config import app, live_address, local_address, lease_price
+from config import app, get_domain, lease_price
 from models import Videos
 from drive import fetch_beat_files, download_all_files
-
-'''--------------------------------------------------------------------------'''
-
-domain = live_address
-if __name__ == '__main__':
-    domain = local_address
 
 '''-------------------------------------------------------------------------------------------------------------------
 PAYPAL API - ACCEPTING PAYMENTS'''
@@ -65,8 +59,8 @@ def create_order(video_id, video_title):
             ],
             'application_context': {
                 'brand_name': 'Vince Maina',
-                'cancel_url': domain + '/beats/' + video_id, # FIX THIS
-                'return_url': domain + '/confirming', # Basically this should forward the user to a payment confirmation page where they can access their files and lease document.
+                'cancel_url': get_domain() + '/beats/' + video_id, # FIX THIS
+                'return_url': get_domain() + '/confirming', # Basically this should forward the user to a payment confirmation page where they can access their files and lease document.
                 'user_action': 'PAY_NOW'
             }
         }
