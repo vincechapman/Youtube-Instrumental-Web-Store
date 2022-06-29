@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 import os
@@ -23,8 +23,9 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 wsgi_app = app.wsgi_app
 
-live_address = 'https://vincemaina.herokuapp.com'
-local_address = 'http://127.0.0.1:5000'
+def get_domain():
+    domain = request.root_url[:-1]
+    return domain
 
 lease_price = '30.00' # Use a text file or something to store the lease price.
 

@@ -16,7 +16,7 @@ import io
 '''-------------------------
 MY MODULES'''
 from credentials import creds
-from config import sender_address
+from config import sender_address, get_domain
 from drive import drive_service
 
 def send_confirmation_email(order_id, beat_name, video_title, recipient_address, lease_id):
@@ -25,7 +25,10 @@ def send_confirmation_email(order_id, beat_name, video_title, recipient_address,
         service = build('gmail', 'v1', credentials=creds)
         message = EmailMessage()
 
-        message.set_content(f"Thank you for your order!\nOrder Id: {order_id}, Beat: {beat_name} ({video_title})")
+        body = \
+            f"Order ID: {order_id}\n\nBeat: {beat_name}\nVideo name: {video_title}\n\nDownload your files and lease agreement here: {get_domain()}/{order_id}/{lease_id}/receipt\n\nFeel free to reply directly to this email if you have any questions!\n\n— Vince"
+
+        message.set_content(body)
 
         message['To'] = recipient_address
         message['From'] = sender_address
@@ -48,4 +51,4 @@ def send_confirmation_email(order_id, beat_name, video_title, recipient_address,
     return send_message
 
 if __name__ == '__main__':
-    send_confirmation_email('012345TEST', 'TESTBEATNAME', 'TESTVIDEOTITLE', 'vince@elevatecopy.com')
+    send_confirmation_email('012345TEST', 'TESTBEATNAME', 'TESTVIDEOTITLE', 'vince@elevatecopy.com', '1Eny9AaVXVbFvAljb2rD47pP6exeuzvPgoeW5gep-0BY')
