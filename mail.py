@@ -26,7 +26,7 @@ def send_confirmation_email(order_id, beat_name, video_title, recipient_address,
         message = EmailMessage()
 
         body = \
-            f"Order Id: {order_id}\n\nBeat: {beat_name}\nVideo name: {video_title}\n\nDownload your files and lease agreement here: {get_domain()}/{order_id}/{lease_id}/receipt\n\nFeel free to reply directly to this email if you have any questions!\n\n— Vince"
+            f"Order ID: {order_id}\n\nBeat: {beat_name}\nVideo name: {video_title}\n\nDownload your files and lease agreement here: {get_domain()}/{order_id}/{lease_id}/receipt\n\nFeel free to reply directly to this email if you have any questions!\n\n— Vince"
 
         message.set_content(body)
 
