@@ -1,0 +1,35 @@
+{% extends 'master.html' %}
+
+{% block title %}{{video.video_title}}{% endblock %} <!-- Confirm this is working -->
+
+{% block additionallinks %}
+<link rel="stylesheet" href="{{url_for('static', filename='styles/beat.css')}}"/>
+<link rel="stylesheet" href="{{url_for('static', filename='styles/beatlibrary.css')}}"/>
+{% endblock %}
+
+{% block body %}
+<h1>{{video.video_title}}</h1>
+<h2>{{video.video_beat_name}}</h2>
+<div>
+  {% if video.beat_mixdowns %}
+  ✔ Mixdowns available for instant download
+  {% else %}
+  Contact me for Mixdown files
+  {% endif %}
+</div>
+<div>
+  {% if video.beat_stems %}
+  ✔ Stems available for instant download
+  {% else %}
+  Contact me if you need the Stems
+  {% endif %}
+</div>
+<iframe id="youtube-embed" src="https://www.youtube.com/embed/{{video.video_id}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+<form action="{{url_for('create_order', video_id=video.video_id, video_title=video.video_title)}}">
+  <button type="submit">Purchase</button>
+</form>
+
+<p>{{video.video_description}}</p>
+
+{% endblock %}

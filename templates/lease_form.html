@@ -1,0 +1,25 @@
+{% extends 'master.html' %}
+
+{% block title %}Form{% endblock %}
+
+{% block additionallinks %}{% endblock %}
+
+{% block body %}
+<h1>Your Lease</h1>
+<h2>Enter your details below</h2>
+<form action="#" method="post">
+
+    <div>
+        <label for="artists_legal_name">What is your full legal name? (I.e. the name on your passport/driver's license etc.)</label>
+        <input type="text" name="artists_legal_name" required="required">
+    </div>
+
+    <div>
+        <label for="artists_professional_name">What is your artist name? (I.e. the name on your Spotify, Apple Music etc.)</label>
+        <input type="text" name="artists_professional_name" required="required">
+    </div>
+
+    <input type="submit" value="Get files">
+</form>
+
+{% endblock %}

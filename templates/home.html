@@ -1,0 +1,14 @@
+{% extends 'master.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block additionallinks %}<link rel="stylesheet" href="{{url_for('static', filename='styles/home.css')}}"/>{% endblock %}
+
+{% block body %}
+<h1 id="title-logo">Vince Maina</h1>
+<div id="title-menu">
+    <div><a href="/beats">Beats</a></div>
+    <div><a href="https://www.youtube.com/channel/UCn2iypP7ektcWULuNKGdcSQ/featured">YouTube</a></div>
+    <div><a href="https://www.instagram.com/vincemainaig/">Instagram</a></div>
+</div>
+{% endblock %}

@@ -1,0 +1,88 @@
+body {
+    color: white;
+    background:
+        radial-gradient(circle, rgb(0, 25, 27), rgb(15, 3, 0)),
+        black;
+    text-align: center;
+    /* font-family: Calibri, sans-serif; */
+    font-family: 'Inconsolata', monospace;
+}
+
+iframe {
+    border-radius: 10px;
+    width: calc(560px * 1.5);
+    height: calc(315px * 1.5);
+}
+
+#site-logo {
+    height: 100px;
+    margin-top: 30px;
+}
+
+button {
+    cursor: pointer;
+}
+
+/* RESPONSIVE ATTRIBUTES */
+
+/* Phones */
+@media only screen and (max-device-width: 480px) {
+    body {
+        font-size: 16px;
+        padding: 0px 10px;
+        padding-top: 20px;
+    }
+    #title-logo {
+        font-size: 4em;
+    }
+}
+
+/* Tablets */
+@media only screen and (min-device-width: 481px) and (max-device-width: 768px) {
+    body {
+        font-size: 17px;
+        padding: inherit 30px;
+    }
+    #title-logo {
+        font-size: 4em;
+    }
+}
+
+/* Laptops */
+@media only screen and (min-device-width: 769px) and (max-device-width: 1024px) {
+    body {
+        font-size: 18px;
+        padding: inherit 50px;
+    }
+    #title-logo {
+        font-size: 4em;
+    }
+}
+
+/* Desktops */
+@media only screen and (min-device-width: 1025px) and (max-device-width: 1440px) {
+    body {
+        font-size: 19px;
+    }
+    body > * {
+        max-width: 900px;
+        margin: 30px auto;
+    }
+    #title-logo {
+        font-size: 4em;
+    }
+}
+
+/* Extra large */
+@media only screen and (min-device-width: 1441px) {
+    body {
+        font-size: 20px;
+    }
+    body > * {
+        max-width: 980px;
+        margin: 30px auto;
+    }
+    #title-logo {
+        font-size: 4em;
+    }
+}

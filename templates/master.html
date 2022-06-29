@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8" />
+    <title>{% block title %}{% endblock %}</title>
+
+    <!-- Main stylesheet -->
+    <link rel="stylesheet" href="{{url_for('static', filename='styles/main.css')}}" />
+
+    <!-- Importing fonts for logo -->
+    <!-- <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Special+Elite&display=swap" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet"> -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <!-- For page specific links -->
+    {% block additionallinks %}{% endblock %}
+
+</head>
+
+<body>
+    <script src="https://kit.fontawesome.com/66d5817b83.js" crossorigin="anonymous"></script>
+    <!--This might slow down page load times-->
+    <a href="{{url_for('home')}}">
+        <img id="site-logo" src="/static/images/Screenshot-2021-08-28-010916-_1_-stroke-and-fill-svg.png" alt="logo">
+    </a>
+    {% block body %}{% endblock %}
+</body>
+
+</html>

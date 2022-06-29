@@ -1,0 +1,26 @@
+{% extends 'master.html' %}
+
+{% block title %}Beat Library{% endblock %}
+
+{% block additionallinks %}<link rel="stylesheet" href="{{url_for('static', filename='styles/beatlibrary.css')}}"/>{% endblock %}
+
+{% block body %}
+<h1>Beat Library</h1>
+<p>Browse my collection of beats.</p>
+
+<div id="beat-library">
+    {% for video in videos %}
+    <a class="beat grid-container" href="/beats/{{video.video_id}}">
+        <img class="grid-item" src="{{video.video_thumbnail}}" alt="thumbnail" height="100%">
+        <div class="grid-item">
+            <h4>{{video.video_title}}</h4>
+            <p>135 BPM | No Uncleared Samples | Upbeat</p>
+        </div>
+        <form class="grid-item" action="{{url_for('create_order', video_id=video.video_id, video_title=video.video_title)}}">
+            <button type="submit"><i class="fa-solid fa-cart-shopping"></i><p>Buy</p></button>
+        </form>
+    </a>
+    {% endfor %}
+</div>
+
+{% endblock %}

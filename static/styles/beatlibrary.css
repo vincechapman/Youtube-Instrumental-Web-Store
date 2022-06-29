@@ -1,0 +1,63 @@
+#beat-library > .beat {
+    margin-bottom: 10px;
+}
+
+.beat.grid-container {
+    border-radius: 5px;
+    display: grid;
+    grid-template-columns: 0fr 1fr 0fr;
+    grid-template-rows: 75px;
+    background-color: rgba(0, 29, 34, 0.53);
+    gap: 20px;
+    padding: 10px;
+    box-shadow: rgba(0, 0, 0, 0.5) 1px 1px 3px;
+}
+
+.beat.grid-container:hover {
+    background-color: rgba(6, 45, 63, 0.53);
+}
+
+button {
+    background-color: hsl(0, 0%, 100%);
+    color: hsl(39, 100%, 10%);
+    font-weight: bolder;
+    padding: 10px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    width: 7em;
+    margin-right: 10px;
+}
+
+button > * {
+    display: inline;
+    margin: auto 3px;
+}
+
+button:hover {
+    background-color: hsl(36, 100%, 50%);
+}
+
+.grid-item {
+    text-align: left;
+    display: block;
+    margin: auto 0px;
+}
+
+.grid-item > h4 {
+    margin: 0px;
+    color: rgb(0, 165, 177);
+}
+.grid-item > p {
+    margin: 0px;
+    font-size: 0.8em;
+}
+
+img.grid-item {
+    border-radius: 5px;
+}
+
+a:link { text-decoration: none; color: inherit; }
+a:visited { text-decoration: none; color: inherit;}
+a:hover { text-decoration: none; }
+a:active { text-decoration: none; }
