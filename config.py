@@ -12,6 +12,7 @@ BEAT_WEBSITE_OAUTH_CREDENTIALS = os.environ.get('BEAT_WEBSITE_OAUTH_CREDENTIALS'
 PAYPAL_SANDBOX_CLIENT_ID = os.environ.get('PAYPAL_SANDBOX_CLIENT_ID')
 PAYPAL_SANDBOX_CLIENT_SECRET = os.environ.get('PAYPAL_SANDBOX_CLIENT_SECRET')
 YOUTUBE_API_KEY = os.environ.get('YOUTUBE_API_KEY')
+TOKEN_JSON = os.environ.get('TOKEN_JSON')
 
 '''----------------------------------------------------------------------------------------------------
 CONFIG'''

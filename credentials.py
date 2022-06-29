@@ -3,12 +3,15 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 
-from config import BEAT_WEBSITE_OAUTH_CREDENTIALS
+from config import BEAT_WEBSITE_OAUTH_CREDENTIALS, TOKEN_JSON
 
 # If making changes to scope, delete 'token.json'
 SCOPES = ['https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/gmail.send', 'https://www.googleapis.com/auth/documents']
 
 creds = None
+
+with open('token.json', 'w') as f: # Creates a credentials.json file from the string in the environment variable, BEAT_WEBSITE_OAUTH_CREDENTIALS. This string was obtained from a json file downlaoded from the google developer console.
+    f.write(TOKEN_JSON)
 
 if os.path.exists('token.json'):
     creds = Credentials.from_authorized_user_file('token.json', SCOPES)
