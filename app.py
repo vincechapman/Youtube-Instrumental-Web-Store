@@ -176,6 +176,14 @@ def capture_order():
                 order_id=order_id
             )
 
+            send_confirmation_email(
+                order_id = order_id,
+                beat_name = video.video_beat_name,
+                video_title = video.video_title,
+                recipient_address = 'vince@elevatecopy.com', # UPDATE THIS TO USE ACTUAL ADDRESS FROM PAYPAL ORDER
+                lease_id = lease_id
+            )
+
             return redirect(url_for('receipt', order_id=order_id, lease_id=lease_id))
 
         except IOError as ioe:
@@ -217,13 +225,6 @@ def receipt(order_id, lease_id):
         elif request.form['submit'] == 'lease':
             return export_lease(lease_id, f'Licence - {video_beat_name} ({order_id}).pdf')
     else:
-        send_confirmation_email(
-            order_id = order_id,
-            beat_name = video_beat_name,
-            video_title = video.video_title,
-            recipient_address = 'vince@elevatecopy.com',
-            lease_id = lease_id
-        )
         return render_template('receipt.html', order_id=order_id, video=video, stems=stems, mixdowns=mixdowns)
 
 
