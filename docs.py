@@ -141,7 +141,7 @@ def create_lease(producers_legal_name, producers_professional_name, artists_lega
                             "matchCase": "False",
                             "text": "[[lease date]]" # Text to replace
                         },
-                        "replaceText": str(datetime.today().strftime("%d/%m/%Y, %H:%M")) # Text to replace it with
+                        "replaceText": str(datetime.now().astimezone().strftime("%d %B %Y, %H:%M (%Z)")) # Text to replace it with
                     }
                 },
             ]
