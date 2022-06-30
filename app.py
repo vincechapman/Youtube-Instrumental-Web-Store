@@ -5,8 +5,7 @@ from random import randint
 
 from flask import redirect, render_template, url_for, request
 from paypalcheckoutsdk.core import PayPalHttpClient, SandboxEnvironment
-from paypalcheckoutsdk.orders import (OrdersCaptureRequest,
-                                      OrdersCreateRequest, OrdersGetRequest)
+from paypalcheckoutsdk.orders import OrdersCaptureRequest, OrdersCreateRequest, OrdersGetRequest
 from paypalhttp import HttpError
 
 from googleapiclient.errors import HttpError
@@ -191,7 +190,7 @@ def capture_order():
                 # Something went wrong client side
                 print('Something went wrong client side')
                 print(ioe)
-                return "Form already completed."
+                return "Form already completed. The link to get back to the receipt page is included in the purchase confirmation email."
 
     return render_template('lease_form.html')
 
