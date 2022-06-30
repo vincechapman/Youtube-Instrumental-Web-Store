@@ -112,8 +112,8 @@ def create_order(video_id, video_title):
             ],
             'application_context': {
                 'brand_name': 'Vince Maina',
-                'cancel_url': get_domain() + '/beats/' + video_id, # FIX THIS
-                'return_url': get_domain() + '/confirming', # Basically this should forward the user to a payment confirmation page where they can access their files and lease document.
+                'cancel_url': get_domain() + url_for('beat', video_id=video_id),
+                'return_url': get_domain() + url_for('capture_order'),
                 'user_action': 'PAY_NOW'
             }
         }
@@ -144,32 +144,40 @@ def create_order(video_id, video_title):
 @app.route('/confirming', methods=['GET', 'POST'])
 def capture_order():
 
-    from flask import request  # Check if there's a way I can do this without having to import this package here inside the function
-    url = request.url
-
-    order_id = [i.split('=') for i in url[url.find('?') + 1:].split('&')][0][1]
-
     if request.method == 'POST':
 
         artists_legal_name = request.form['artists_legal_name']
         artists_professional_name = request.form['artists_professional_name']
 
+        url = request.url
+        order_id = [i.split('=') for i in url[url.find('?') + 1:].split('&')][0][1]
+
         try:
 
             capture_request = OrdersCaptureRequest(order_id) # This should be an Approved Order ID
             response = client.execute(capture_request)
+            print('Capture order:\n', json.dumps(response.result.dict(), indent = 4))
 
-            print(response)
+            amount_paid = response.result.purchase_units[0]['payments']['captures'][0]['amount']['value']
+
+            currency_code = response.result.purchase_units[0]['payments']['captures'][0]['amount']['currency_code']
+            if currency_code == 'GBP':
+                currency_code = '£'
+            else:
+                currency_code += ' '
+
+            video_id = response.result.purchase_units[0]['payments']['captures'][0]['custom_id']
+            video = Videos.query.get(video_id)
 
             lease_id = create_lease(
-                producers_legal_name='Vincent Chapman-Andrews',
+                producers_legal_name='Vincent Chapman-Andrews', # Update Model so that I get added by default, and then if any featured artists are specified they get added too.
                 producers_professional_name='Vince Maina',
                 artists_legal_name=artists_legal_name,
                 artists_professional_name=artists_professional_name,
-                beat_name='Maida Vale', # FIX
-                youtube_link='https://www.youtube.com/watch?v=uBXpY1gE4xU&ab_channel=VinceMaina', # FIX
+                beat_name=video.video_beat_name,
+                youtube_link=f'https://youtu.be/{video_id}', # FIX
                 composer_legal_name='Vincent Chapman-Andrews',
-                beat_price='£' + lease_price # FIX - SHOULD MATCH WHAT IS IN THE PAYPAL ORDER RECIEPT.
+                beat_price= currency_code + amount_paid # FIX - SHOULD MATCH WHAT IS IN THE PAYPAL ORDER RECIEPT.
             )
 
             return redirect(url_for('receipt', order_id=order_id, lease_id=lease_id))
@@ -184,7 +192,7 @@ def capture_order():
                 # Something went wrong client side
                 print(ioe)
 
-            return redirect(url_for('error_payment_not_captured'))
+            return 'Error 001: Payment Unsuccessful. Please contact site owner.'
 
     return render_template('lease_form.html')
 
@@ -197,17 +205,9 @@ def receipt(order_id, lease_id):
     video_id = response.result.purchase_units[0]['custom_id']
         
     video = Videos.query.get(video_id)
-    video_beat_name = video.video_beat_name # SLICED because saved as string with dictionary syntax i.e. '['Beat_name']'
+    video_beat_name = video.video_beat_name
 
     stems, mixdowns = fetch_beat_files(video_beat_name)
-
-    send_confirmation_email(
-        order_id = order_id,
-        beat_name = video_beat_name,
-        video_title = video.video_title,
-        recipient_address = 'vince@elevatecopy.com',
-        lease_id = lease_id
-    )
 
     from flask import request
 
@@ -217,17 +217,17 @@ def receipt(order_id, lease_id):
         elif request.form['submit'] == 'stems':
             return download_all_files(video_beat_name, stems, 'stems')
         elif request.form['submit'] == 'lease':
-            return export_lease(lease_id, 'testpath.pdf')
+            return export_lease(lease_id, f'Licence - {video_beat_name} ({order_id}).pdf')
     else:
-
+        send_confirmation_email(
+            order_id = order_id,
+            beat_name = video_beat_name,
+            video_title = video.video_title,
+            recipient_address = 'vince@elevatecopy.com',
+            lease_id = lease_id
+        )
         return render_template('receipt.html', order_id=order_id, video=video, stems=stems, mixdowns=mixdowns)
 
-'''----------------------------------------------------------------------------------------------------
-ERRORS'''
-
-@app.route('/error/001')
-def error_payment_not_captured():
-    return 'Error 001: Payment Unsuccessful. Please contact site owner.'
 
 '''----------------------------------------------------------------------------------------------------
 RUNS THE APP ON A LOCAL SERVER'''

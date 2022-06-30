@@ -44,7 +44,7 @@ docs_service = build('docs', 'v1', credentials=creds)
 
 def copy_lease_template(beat_name, artist_name):
     
-    copy_title = f'{beat_name} - Lease Agreement (Non-Exclusive) - {artist_name}'
+    copy_title = f'{artist_name} - {beat_name} - Licence (Non-Exclusive)'
     
     body = {
         'name': copy_title,
@@ -141,7 +141,7 @@ def create_lease(producers_legal_name, producers_professional_name, artists_lega
                             "matchCase": "False",
                             "text": "[[lease date]]" # Text to replace
                         },
-                        "replaceText": str(datetime.today().strftime("%d/%m/%Y, %H:%M:%S")) # Text to replace it with
+                        "replaceText": str(datetime.today().strftime("%d/%m/%Y, %H:%M")) # Text to replace it with
                     }
                 },
             ]
