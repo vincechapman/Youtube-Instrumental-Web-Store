@@ -5,8 +5,7 @@ from random import randint
 
 from flask import redirect, render_template, url_for, request
 from paypalcheckoutsdk.core import PayPalHttpClient, SandboxEnvironment
-from paypalcheckoutsdk.orders import (OrdersCaptureRequest,
-                                      OrdersCreateRequest, OrdersGetRequest)
+from paypalcheckoutsdk.orders import OrdersCaptureRequest, OrdersCreateRequest, OrdersGetRequest
 from paypalhttp import HttpError
 
 from googleapiclient.errors import HttpError
@@ -173,7 +172,8 @@ def capture_order():
                 beat_name=video.video_beat_name,
                 youtube_link=f'https://youtu.be/{video_id}', # FIX
                 composer_legal_name='Vincent Chapman-Andrews',
-                beat_price= currency_code + amount_paid # FIX - SHOULD MATCH WHAT IS IN THE PAYPAL ORDER RECIEPT.
+                beat_price= currency_code + amount_paid, # FIX - SHOULD MATCH WHAT IS IN THE PAYPAL ORDER RECIEPT.
+                order_id=order_id
             )
 
             return redirect(url_for('receipt', order_id=order_id, lease_id=lease_id))
@@ -181,14 +181,16 @@ def capture_order():
         except IOError as ioe:
             if isinstance(ioe, HttpError):
                 # Something went wrong server-side i.e. Paypal's end
+                print('Something went wrong on Paypal\'s end.')
                 print(ioe.status_code)
                 print(ioe.headers)
                 print(ioe)
+                return 'Error 001: Payment error. Please contact site owner.'
             else:
                 # Something went wrong client side
+                print('Something went wrong client side')
                 print(ioe)
-
-            return 'Error 001: Payment Unsuccessful. Please contact site owner.'
+                return "Form already completed. The link to get back to the receipt page is included in the purchase confirmation email."
 
     return render_template('lease_form.html')
 

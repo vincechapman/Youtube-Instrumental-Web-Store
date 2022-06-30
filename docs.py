@@ -42,9 +42,9 @@ LEASE_FOLDER_ID = '1iVlkZ_JQXaPvFpQLxYM0267_oym2UkEu'
 
 docs_service = build('docs', 'v1', credentials=creds)
 
-def copy_lease_template(beat_name, artist_name):
+def copy_lease_template(beat_name, artist_name, order_id):
     
-    copy_title = f'{artist_name} - {beat_name} - Licence (Non-Exclusive)'
+    copy_title = f'{artist_name} - {beat_name} - Licence (Non-Exclusive) - {order_id}'
     
     body = {
         'name': copy_title,
@@ -57,8 +57,8 @@ def copy_lease_template(beat_name, artist_name):
     
     return document_copy_id
 
-def create_lease(producers_legal_name, producers_professional_name, artists_legal_name, artists_professional_name, beat_name, youtube_link, composer_legal_name, beat_price):
-    document_id = copy_lease_template(beat_name, artists_professional_name)
+def create_lease(producers_legal_name, producers_professional_name, artists_legal_name, artists_professional_name, beat_name, youtube_link, composer_legal_name, beat_price, order_id):
+    document_id = copy_lease_template(beat_name, artists_professional_name, order_id)
     document = docs_service.documents().batchUpdate(
         documentId = document_id,
         body = {
@@ -142,6 +142,15 @@ def create_lease(producers_legal_name, producers_professional_name, artists_lega
                             "text": "[[lease date]]" # Text to replace
                         },
                         "replaceText": str(datetime.now().astimezone().strftime("%d %B %Y, %H:%M (%Z)")) # Text to replace it with
+                    }
+                },
+                {
+                    "replaceAllText": {
+                        "containsText": {
+                            "matchCase": "False",
+                            "text": "[[order ID]]" # Text to replace
+                        },
+                        "replaceText": order_id # Text to replace it with
                     }
                 },
             ]
