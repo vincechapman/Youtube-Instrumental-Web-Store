@@ -48,22 +48,19 @@ def return_directory(folder, mode=None):
 
 def fetch_beat_files(beat_name):
 
-    beat_folder_id = return_directory(start_folder_id)[beat_name]
-    beat_folder_dir = return_directory(beat_folder_id)
-
     stems, mixdowns = None, None
-    
+
     try:
+        beat_folder_id = return_directory(start_folder_id)[beat_name]
+        beat_folder_dir = return_directory(beat_folder_id)
+
         stems_folder_id = beat_folder_dir['Stems']
         stems = return_directory(stems_folder_id, mode='files-only')
-    except KeyError:
-        print('No stems added yet.')
-
-    try:
+ 
         mixdown_folder_id = beat_folder_dir['Mixdown']
         mixdowns = return_directory(mixdown_folder_id, mode='files-only')
     except KeyError:
-        print('No mixdowns added yet.')
+        print(f"Either there's no folder called '{beat_name}', or there IS a folder called '{beat_name}' but 'Stems' or 'Mixdown' are missing from that folder.")
 
     return stems, mixdowns
 
