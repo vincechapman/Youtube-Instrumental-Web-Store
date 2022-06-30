@@ -156,7 +156,6 @@ def capture_order():
 
             capture_request = OrdersCaptureRequest(order_id) # This should be an Approved Order ID
             response = client.execute(capture_request)
-            print('Capture order:\n', json.dumps(response.result.dict(), indent = 4))
 
             amount_paid = response.result.purchase_units[0]['payments']['captures'][0]['amount']['value']
 
