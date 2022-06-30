@@ -19,7 +19,7 @@
         <input type="text" name="artists_professional_name" required="required">
     </div>
 
-    <input type="submit" value="Get files">
+    <input type="submit" value="Get files" onClick="this.form.submit(); this.disabled=true; this.value='Submitting…'; ">
 </form>
 
 {% endblock %}
