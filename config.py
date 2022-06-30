@@ -27,6 +27,6 @@ def get_domain():
     domain = request.root_url[:-1]
     return domain
 
-lease_price = '30.00' # Use a text file or something to store the lease price.
+lease_price = '35.00' # Use a text file or something to store the lease price.
 
 sender_address = 'vchapandrews@gmail.com'

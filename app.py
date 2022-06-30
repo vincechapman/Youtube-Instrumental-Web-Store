@@ -1,7 +1,4 @@
 from __future__ import print_function
-import io
-
-import json
 
 from datetime import datetime
 from random import randint
