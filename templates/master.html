@@ -6,24 +6,16 @@
     <meta charset="utf-8" />
     <title>{% block title %}{% endblock %}</title>
 
-    <!-- Main stylesheet -->
     <link rel="stylesheet" href="{{url_for('static', filename='styles/main.css')}}" />
-
-    <!-- Importing fonts for logo -->
-    <!-- <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Special+Elite&display=swap" rel="stylesheet">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet"> -->
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700;900&display=swap" rel="stylesheet">
 
-    <!-- For page specific links -->
-    {% block additionallinks %}{% endblock %}
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="https://www.favicon.cc/logo3d/730577.png">
+
+    {% block head %}{% endblock %}
 
 </head>
 

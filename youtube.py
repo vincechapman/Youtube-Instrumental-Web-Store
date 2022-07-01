@@ -3,10 +3,12 @@ from __future__ import print_function
 from googleapiclient.discovery import build
 from requests import HTTPError
 
-from models import Videos, db
+from models import Videos, db, clear_database
 from config import YOUTUBE_API_KEY
 
-import os
+import pafy_modified
+import requests
+
 
 youtube_api_key = YOUTUBE_API_KEY # Currently unrestricted - consider restricting. Don't keep this in this file. Look into using environment variables for secret keys.
 youtube = build('youtube', 'v3', developerKey=youtube_api_key)
@@ -59,7 +61,28 @@ def process_description(video_description, search_key):
                
     return str(temp)
 
+def get_audio_url(video_id):
+    
+    verfied = False
+
+    while not verfied: # Seems like Pafy sometimes produces dead links, this while loop ensures that a valid link is always returned.
+
+        video_object = pafy_modified.new(video_id)
+        audio_url = video_object.getbestaudio().url_https
+        response = requests.head(audio_url)
+
+        if response.status_code == 200:
+            print(f'Status code: {response.status_code} (Link works)')
+            verfied = True
+        elif response.status_code == 403:
+            print(f'Status code: {response.status_code} (Dead link, generate a new one.)')
+        else:
+            print(f'Status code: {response.status_code} (Other http error.)')
+        
+    return audio_url
+
 def add_uploads_to_database():
+    clear_database()
     video_id_list = fetch_upload_ids()
     keep_looping = True
     while keep_looping:
@@ -91,8 +114,12 @@ def add_uploads_to_database():
                 video_thumbnail = video['snippet']['thumbnails']['medium']['url'],
                 video_description = video['snippet']['description'],
                 video_beat_name = process_description(video['snippet']['description'], 'Beat name'),
-                video_tags = process_description(video['snippet']['description'], 'Tags')
+                video_tags = process_description(video['snippet']['description'], 'Tags'),
+                audio_url = get_audio_url(video['id'])
                 )
             db.session.add(video_to_add)
 
     db.session.commit()
+
+if __name__ == '__main__':
+    add_uploads_to_database()
