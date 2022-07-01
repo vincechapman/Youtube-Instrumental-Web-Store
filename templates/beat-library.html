@@ -2,25 +2,45 @@
 
 {% block title %}Beat Library{% endblock %}
 
-{% block additionallinks %}<link rel="stylesheet" href="{{url_for('static', filename='styles/beatlibrary.css')}}"/>{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{url_for('static', filename='styles/beatlibrary.css')}}"/>
+<audio id="audio" src=""></audio>
+{% endblock %}
 
 {% block body %}
 <h1>Beat Library</h1>
 <p>Browse my collection of beats.</p>
 
+<progress id="seekbar" value="0"></progress>
+
+<!-- <input
+    id="seek"
+    type="range"
+    min="0"
+    max="100"
+    value="0"
+    step="0.0001"
+/> -->
+
 <div id="beat-library">
     {% for video in videos %}
-    <a class="beat grid-container" href="/beats/{{video.video_id}}">
+    <div class="beat grid-container">
         <img class="grid-item" src="{{video.video_thumbnail}}" alt="thumbnail" height="100%">
         <div class="grid-item">
-            <h4>{{video.video_title}}</h4>
+            <h4>{{video.video_beat_name}}</h4>
             <p>135 BPM | No Uncleared Samples | Upbeat</p>
         </div>
-        <form class="grid-item" action="{{url_for('create_order', video_id=video.video_id, video_title=video.video_title)}}">
-            <button type="submit"><i class="fa-solid fa-cart-shopping"></i><p>Buy</p></button>
-        </form>
-    </a>
+        <div>
+            <form class="grid-item" action="{{url_for('beat', video_id=video.video_id)}}">
+                <button type="submit"><i class="fa-solid fa-cart-shopping"></i><p>Buy</p></button>
+            </form>
+            <button id="play-button-{{video.video_id}}" class="play-button" value="{{video.audio_url}}"><i class="fa-solid fa-play"></i>Play</button>
+        </div>
+    </div>
     {% endfor %}
 </div>
+
+<script src="{{url_for('static', filename='js/beat_library.js')}}"></script>
+
 
 {% endblock %}

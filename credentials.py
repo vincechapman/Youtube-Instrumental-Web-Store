@@ -20,7 +20,7 @@ if not creds or not creds.valid:
     if creds and creds.expired and creds.refresh_token:
         creds.refresh(Request())
     else:
-        with open('credentials.json', 'w') as f: # Creates a credentials.json file from the string in the environment variable, BEAT_WEBSITE_OAUTH_CREDENTIALS. This string was obtained from a json file downlaoded from the google developer console.
+        with open('credentials.json', 'w') as f:
             f.write(BEAT_WEBSITE_OAUTH_CREDENTIALS)
         flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
         creds = flow.run_local_server(port=0) # IS THIS GOING TO WORK ON A LIVE SERVER?
