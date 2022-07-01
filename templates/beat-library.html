@@ -34,13 +34,13 @@
             <form class="grid-item" action="{{url_for('beat', video_id=video.video_id)}}">
                 <button type="submit"><i class="fa-solid fa-cart-shopping"></i><p>Buy</p></button>
             </form>
-            <button class="play-button" value="{{video.audio_url}}"><i class="fa-solid fa-play"></i>Play</button>
+            <button id="play-button-{{video.video_id}}" class="play-button" value="{{video.audio_url}}"><i class="fa-solid fa-play"></i>Play</button>
         </div>
     </div>
     {% endfor %}
 </div>
 
-<script src="{{url_for('static', filename='scripts/beat_library.js')}}"></script>
+<script src="{{url_for('static', filename='js/beat_library.js')}}"></script>
 
 
 {% endblock %}
