@@ -39,3 +39,4 @@ toml==0.10.2
 uritemplate==3.0.1
 urllib3==1.26.9
 Werkzeug==2.1.2
+youtube-dl==2021.12.17
