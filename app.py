@@ -33,7 +33,7 @@ def home():
 @app.route('/') # START PAGE
 @app.route('/beats')
 def beat_library():
-    videos = Videos.query.all() # Consider updating this to only send through the data from 'videos' that is needed. Better to be more specific, in case I add any kind of sensitive information to this database model in future.
+    videos = Videos.query.all()
     return render_template('beat-library.html', videos=videos)
 
 @app.route('/beats/<video_id>')

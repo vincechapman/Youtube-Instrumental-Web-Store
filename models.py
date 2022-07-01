@@ -11,6 +11,7 @@ class Videos(db.Model):
     video_tags = db.Column(db.Text)
     beat_mixdowns = db.Column(db.Text)
     beat_stems = db.Column(db.Text)
+    audio_url = db.Column(db.Text)
 
     def __repr__(self):
         return f"\nvideo_id = {self.video_id}\nvideo_title = {self.video_title}\nvideo_publishedAt = {self.video_publishedAt}\nvideo_thumbnail = {self.video_thumbnail}\nvideo_description = {self.video_description}"
