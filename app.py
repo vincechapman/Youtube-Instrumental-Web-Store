@@ -45,28 +45,8 @@ def beat(video_id):
 def update_database():
 
     if request.method == 'POST':
-        clear_database()
 
         add_uploads_to_database()
-
-        beat_folder_id = return_directory(start_folder_id)
-        for i in dict.keys(beat_folder_id):
-            if 'Mixdown' in return_directory(beat_folder_id[i]):
-                try:
-                    video = Videos.query.filter_by(video_beat_name=i).first()
-                    video.beat_mixdowns = return_directory(beat_folder_id[i])['Mixdown']
-                    db.session.commit()
-                except:
-                    db.session.rollback()
-                    print('Error 1: Video not in database. Or other error.')
-            if 'Stems' in return_directory(beat_folder_id[i]):
-                try:
-                    video = Videos.query.filter_by(video_beat_name=i).first()
-                    video.beat_stems = return_directory(beat_folder_id[i])['Stems']
-                    db.session.commit()
-                except:
-                    db.session.rollback()
-                    print('Error 2: Video not in database. Or other error.')
   
     videos = Videos.query.all()
     return render_template('update_database.html', videos=videos)

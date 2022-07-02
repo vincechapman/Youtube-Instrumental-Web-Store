@@ -9,6 +9,7 @@ from config import YOUTUBE_API_KEY
 import pafy_modified
 import requests
 
+from drive import return_directory, start_folder_id
 
 youtube_api_key = YOUTUBE_API_KEY # Currently unrestricted - consider restricting. Don't keep this in this file. Look into using environment variables for secret keys.
 youtube = build('youtube', 'v3', developerKey=youtube_api_key)
@@ -120,6 +121,25 @@ def add_uploads_to_database():
                 audio_url = get_audio_url(video['id'])
                 )
             db.session.add(video_to_add)
+
+        beat_folder_id = return_directory(start_folder_id)
+        for i in dict.keys(beat_folder_id):
+            if 'Mixdown' in return_directory(beat_folder_id[i]):
+                try:
+                    video = Videos.query.filter_by(video_beat_name=i).first()
+                    video.beat_mixdowns = return_directory(beat_folder_id[i])['Mixdown']
+                    db.session.commit()
+                except:
+                    db.session.rollback()
+                    print('Error 1: Video not in database. Or other error.')
+            if 'Stems' in return_directory(beat_folder_id[i]):
+                try:
+                    video = Videos.query.filter_by(video_beat_name=i).first()
+                    video.beat_stems = return_directory(beat_folder_id[i])['Stems']
+                    db.session.commit()
+                except:
+                    db.session.rollback()
+                    print('Error 2: Video not in database. Or other error.')
 
     db.session.commit()
 
