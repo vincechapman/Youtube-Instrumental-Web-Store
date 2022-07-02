@@ -21,6 +21,7 @@
         <th>Artist Tags</th>
         <th>Beat Mixdowns</th>
         <th>Beat Stems</th>
+        <th>Audio URL</th>
     </tr>
 
     {% for i in videos %}
@@ -43,6 +44,12 @@
 
         {% if i.beat_stems %}
         <td>True</td>
+        {% else %}
+        <td></td>
+        {% endif %}
+
+        {% if i.audio_url %}
+        <td>{{ i.audio_url }}</td>
         {% else %}
         <td></td>
         {% endif %}

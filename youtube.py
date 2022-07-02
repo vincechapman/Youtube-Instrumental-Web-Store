@@ -63,6 +63,8 @@ def process_description(video_description, search_key):
 
 def get_audio_url(video_id):
     
+    print(f'\nFetching audio for {video_id}...')
+
     verfied = False
 
     while not verfied: # Seems like Pafy sometimes produces dead links, this while loop ensures that a valid link is always returned.
