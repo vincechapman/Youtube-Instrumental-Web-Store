@@ -51,7 +51,7 @@ def update_database():
 
     if request.method == 'POST':
 
-        job = q.enqueue(add_uploads_to_database())
+        add_uploads_to_database()
   
     videos = Videos.query.all()
     return render_template('update_database.html', videos=videos)

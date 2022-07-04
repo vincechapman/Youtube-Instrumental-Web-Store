@@ -6,6 +6,8 @@ from requests import HTTPError
 from models import Videos, clear_database
 from config import YOUTUBE_API_KEY, db, q
 
+from rq import Queue
+
 import pafy_modified
 import requests
 
@@ -62,31 +64,11 @@ def process_description(video_description, search_key):
                
     return str(temp)
 
-def get_audio_url(video_id):
-    
-    print(f'\nFetching audio for {video_id}...')
 
-    verfied = False
+def get_videos():
 
-    while not verfied: # Seems like Pafy sometimes produces dead links, this while loop ensures that a valid link is always returned.
-
-        video_object = pafy_modified.new(video_id)
-        audio_url = video_object.getbestaudio().url_https
-        response = requests.head(audio_url)
-
-        if response.status_code == 200:
-            print(f'Status code: {response.status_code} (Link works)')
-            verfied = True
-        elif response.status_code == 403:
-            print(f'Status code: {response.status_code} (Dead link, generate a new one.)')
-        else:
-            print(f'Status code: {response.status_code} (Other http error.)')
-        
-    return audio_url
-
-def add_uploads_to_database():
-    clear_database()
     video_id_list = fetch_upload_ids()
+
     keep_looping = True
     while keep_looping:
         if len(video_id_list) < 50:
@@ -118,30 +100,72 @@ def add_uploads_to_database():
                 video_description = video['snippet']['description'],
                 video_beat_name = process_description(video['snippet']['description'], 'Beat name'),
                 video_tags = process_description(video['snippet']['description'], 'Tags'),
-                audio_url = get_audio_url(video['id'])
                 )
             db.session.add(video_to_add)
+    try:
+        db.session.commit()
+    except:
+        db.session.rollback()
+        
+def get_audio_url(video_id):
+    
+    print(f'\nFetching audio for {video_id}...')
 
-        beat_folder_id = return_directory(start_folder_id)
-        for i in dict.keys(beat_folder_id):
-            if 'Mixdown' in return_directory(beat_folder_id[i]):
-                try:
-                    video = Videos.query.filter_by(video_beat_name=i).first()
-                    video.beat_mixdowns = return_directory(beat_folder_id[i])['Mixdown']
-                    db.session.commit()
-                except:
-                    db.session.rollback()
-                    print('Error 1: Video not in database. Or other error.')
-            if 'Stems' in return_directory(beat_folder_id[i]):
-                try:
-                    video = Videos.query.filter_by(video_beat_name=i).first()
-                    video.beat_stems = return_directory(beat_folder_id[i])['Stems']
-                    db.session.commit()
-                except:
-                    db.session.rollback()
-                    print('Error 2: Video not in database. Or other error.')
+    verfied = False
 
+    while not verfied: # Seems like Pafy sometimes produces dead links, this while loop ensures that a valid link is always returned.
+
+        video_object = pafy_modified.new(video_id)
+        audio_url = video_object.getbestaudio().url_https
+        response = requests.head(audio_url)
+
+        if response.status_code == 200:
+            print(f'Status code: {response.status_code} (Link works)')
+            verfied = True
+        elif response.status_code == 403:
+            print(f'Status code: {response.status_code} (Dead link, generate a new one.)')
+        else:
+            print(f'Status code: {response.status_code} (Other http error.)')
+        
+    return audio_url
+
+def get_all_audio_urls():
+    for video in Videos.query.all():
+        video.audio_url = get_audio_url(video.video_id)
     db.session.commit()
+
+
+def get_files():
+
+    beat_folder_id = return_directory(start_folder_id)
+
+    for i in dict.keys(beat_folder_id):
+        if 'Mixdown' in return_directory(beat_folder_id[i]):
+            try:
+                video = Videos.query.filter_by(video_beat_name=i).first()
+                video.beat_mixdowns = return_directory(beat_folder_id[i])['Mixdown']
+                db.session.commit()
+            except:
+                db.session.rollback()
+                print('Error 1: Video not in database. Or other error.')
+        if 'Stems' in return_directory(beat_folder_id[i]):
+            try:
+                video = Videos.query.filter_by(video_beat_name=i).first()
+                video.beat_stems = return_directory(beat_folder_id[i])['Stems']
+                db.session.commit()
+            except:
+                db.session.rollback()
+                print('Error 2: Video not in database. Or other error.')
+
+def add_uploads_to_database():
+    jobs = q.enqueue_many(
+    [
+        Queue.prepare_data(clear_database, job_id='clear_database'),
+        Queue.prepare_data(get_videos, job_id='get_videos'),
+        Queue.prepare_data(get_all_audio_urls, job_id='get_all_audio_urls'),
+        Queue.prepare_data(get_files, job_id='get_files'),
+    ]
+    )
 
 if __name__ == '__main__':
     add_uploads_to_database()
