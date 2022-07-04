@@ -3,8 +3,8 @@ from __future__ import print_function
 from googleapiclient.discovery import build
 from requests import HTTPError
 
-from models import Videos, db, clear_database
-from config import YOUTUBE_API_KEY
+from models import Videos, clear_database
+from config import YOUTUBE_API_KEY, db, q
 
 import pafy_modified
 import requests
