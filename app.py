@@ -13,15 +13,20 @@ from googleapiclient.errors import HttpError
 '''-------------------------------------------------------------
 MY MODULES'''
 
-from config import app, db, get_domain, lease_price, PAYPAL_SANDBOX_CLIENT_ID, PAYPAL_SANDBOX_CLIENT_SECRET
+from config import app, db, q, get_domain, lease_price, PAYPAL_SANDBOX_CLIENT_ID, PAYPAL_SANDBOX_CLIENT_SECRET
 
-from models import Videos, clear_database
+from models import Videos
 from youtube import add_uploads_to_database
 
 from mail import send_confirmation_email
-from drive import fetch_beat_files, download_all_files, return_directory, start_folder_id
+from drive import fetch_beat_files, download_all_files
 
 from docs import export_lease, create_lease
+
+'''-------------------------------------------------------------
+INSTANTIATING DATABASE IF IT ISN'T ALREADY'''
+
+db.create_all()
 
 '''----------------------------------------------------------------------------------------------------
 ROUTING'''
@@ -33,7 +38,7 @@ def home():
 @app.route('/') # START PAGE
 @app.route('/beats')
 def beat_library():
-    videos = Videos.query.all()
+    videos = Videos.query.order_by(Videos.video_publishedAt.desc()).all()
     return render_template('beat-library.html', videos=videos)
 
 @app.route('/beats/<video_id>')
@@ -48,7 +53,7 @@ def update_database():
 
         add_uploads_to_database()
   
-    videos = Videos.query.all()
+    videos = Videos.query.order_by(Videos.video_publishedAt.desc()).all()
     return render_template('update_database.html', videos=videos)
 
 
