@@ -38,7 +38,7 @@ def home():
 @app.route('/') # START PAGE
 @app.route('/beats')
 def beat_library():
-    videos = Videos.query.all()
+    videos = Videos.query.order_by(Videos.video_publishedAt).all()
     return render_template('beat-library.html', videos=videos)
 
 @app.route('/beats/<video_id>')
@@ -53,7 +53,7 @@ def update_database():
 
         add_uploads_to_database()
   
-    videos = Videos.query.all()
+    videos = Videos.query.order_by(Videos.video_publishedAt).all()
     return render_template('update_database.html', videos=videos)
 
 
