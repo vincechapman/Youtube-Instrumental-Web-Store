@@ -102,10 +102,6 @@ def get_videos():
                 video_tags = process_description(video['snippet']['description'], 'Tags'),
                 )
             db.session.add(video_to_add)
-    try:
-        db.session.commit()
-    except:
-        db.session.rollback()
         
 def get_audio_url(video_id):
     
@@ -132,7 +128,6 @@ def get_audio_url(video_id):
 def get_all_audio_urls():
     for video in Videos.query.all():
         video.audio_url = get_audio_url(video.video_id)
-    db.session.commit()
 
 
 def get_files():
@@ -144,18 +139,22 @@ def get_files():
             try:
                 video = Videos.query.filter_by(video_beat_name=i).first()
                 video.beat_mixdowns = return_directory(beat_folder_id[i])['Mixdown']
-                db.session.commit()
             except:
-                db.session.rollback()
                 print('Error 1: Video not in database. Or other error.')
         if 'Stems' in return_directory(beat_folder_id[i]):
             try:
                 video = Videos.query.filter_by(video_beat_name=i).first()
                 video.beat_stems = return_directory(beat_folder_id[i])['Stems']
-                db.session.commit()
             except:
-                db.session.rollback()
                 print('Error 2: Video not in database. Or other error.')
+
+def session_commit():
+    try:
+        db.session.commit()
+        print('Committed!')
+    except:
+        db.session.rollback()
+        print('Rollback!')
 
 def add_uploads_to_database():
     jobs = q.enqueue_many(
@@ -164,6 +163,7 @@ def add_uploads_to_database():
         Queue.prepare_data(get_videos, job_id='get_videos'),
         Queue.prepare_data(get_all_audio_urls, job_id='get_all_audio_urls'),
         Queue.prepare_data(get_files, job_id='get_files'),
+        Queue.prepare_data(session_commit, job_id='session_commit')
     ]
     )
 

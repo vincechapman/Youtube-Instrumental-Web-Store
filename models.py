@@ -20,7 +20,6 @@ def clear_database():
 
     try:
         num_rows_deleted = db.session.query(Videos).delete()
-        db.session.commit()
         print('Table cleared')
     except:
         db.session.rollback()
