@@ -4,7 +4,7 @@ from datetime import datetime
 from random import randint
 
 from flask import redirect, render_template, url_for, request
-from paypalcheckoutsdk.core import PayPalHttpClient, SandboxEnvironment
+from paypalcheckoutsdk.core import PayPalHttpClient, SandboxEnvironment, LiveEnvironment
 from paypalcheckoutsdk.orders import OrdersCaptureRequest, OrdersCreateRequest, OrdersGetRequest
 from paypalhttp import HttpError
 
@@ -13,7 +13,7 @@ from googleapiclient.errors import HttpError
 '''-------------------------------------------------------------
 MY MODULES'''
 
-from config import app, db, q, get_domain, lease_price, PAYPAL_SANDBOX_CLIENT_ID, PAYPAL_SANDBOX_CLIENT_SECRET
+from config import app, db, get_domain, lease_price, PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PAYPAL_LIVE
 
 from models import Videos
 from youtube import add_uploads_to_database
@@ -60,11 +60,16 @@ def update_database():
 '''-------------------------------------------------------------------------------------------------------------------
 PAYPAL API - ACCEPTING PAYMENTS'''
 
-# Creating an environment
-environment = SandboxEnvironment(
-    client_id=PAYPAL_SANDBOX_CLIENT_ID,
-    client_secret=PAYPAL_SANDBOX_CLIENT_SECRET
-    )
+if PAYPAL_LIVE == 'true':
+    environment = LiveEnvironment(
+        client_id=PAYPAL_CLIENT_ID,
+        client_secret=PAYPAL_CLIENT_SECRET
+        )
+elif PAYPAL_LIVE == 'false':
+    environment = SandboxEnvironment(
+        client_id=PAYPAL_CLIENT_ID,
+        client_secret=PAYPAL_CLIENT_SECRET
+        )
 client = PayPalHttpClient(environment)
 
 @app.route('/beats/<video_id>/<video_title>/purchase')
