@@ -20,12 +20,16 @@
 </head>
 
 <body>
-    <script src="https://kit.fontawesome.com/66d5817b83.js" crossorigin="anonymous"></script>
-    <!--This might slow down page load times-->
+    <script src="{{url_for('static', filename='js/check_link_is_secure.js')}}"></script>
+    
+    <script src="https://kit.fontawesome.com/66d5817b83.js" crossorigin="anonymous"></script> <!--This might slow down page load times-->
+    
     <a href="{{url_for('home')}}">
         <img id="site-logo" src="/static/images/Screenshot-2021-08-28-010916-_1_-stroke-and-fill-svg.png" alt="logo">
     </a>
+    
     {% block body %}{% endblock %}
+
 </body>
 
 </html>
