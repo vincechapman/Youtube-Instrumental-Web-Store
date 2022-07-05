@@ -28,21 +28,46 @@ INSTANTIATING DATABASE IF IT ISN'T ALREADY'''
 
 db.create_all()
 
+'''-------------------------------------------------------------
+SSL Certificate Workaround'''
+
+def check_link_is_secure():
+
+    current_url = request.url
+    print("Called check_link_is_secure() on", current_url)
+
+    if current_url.startswith("http://127.0.0.1") or current_url.startswith("http://localhost"):
+        return False, print("Running on local server.")
+
+    if current_url.startswith("http://"):
+        new_url = current_url.replace("http://", "https://", 1)
+        print("Link changed to:", new_url, "\n")
+        return True, new_url
+
+    return False, print("Link is already secure.\n")
+
 '''----------------------------------------------------------------------------------------------------
 ROUTING'''
 
-@app.route('/home')
+@app.route('/') # START PAGE
 def home():
     return redirect(url_for('beat_library'))
 
-@app.route('/') # START PAGE
 @app.route('/beats')
 def beat_library():
+
+    updated_link, new_url = check_link_is_secure()
+    if updated_link: return redirect(new_url)
+
     videos = Videos.query.order_by(Videos.video_publishedAt.desc()).all()
     return render_template('beat-library.html', videos=videos)
 
 @app.route('/beats/<video_id>')
 def beat(video_id):
+
+    updated_link, new_url = check_link_is_secure()
+    if updated_link: return redirect(new_url)
+
     video = Videos.query.get(video_id)
     return render_template('beat.html', video=video)
 
