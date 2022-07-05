@@ -3,7 +3,7 @@ from __future__ import print_function
 from googleapiclient.discovery import build
 from requests import HTTPError
 
-from models import Videos, clear_database
+from models import Updated_videos, Videos, clear_database
 from config import YOUTUBE_API_KEY, db, q
 
 from rq import Queue
@@ -92,7 +92,7 @@ def get_videos():
         # This takes those details and adds them to our database.
 
         for video in response['items']:
-            video_to_add = Videos(
+            video_to_add = Updated_videos(
                 video_id = video['id'],
                 video_title = video['snippet']['title'],
                 video_publishedAt = video['snippet']['publishedAt'],
@@ -130,7 +130,7 @@ def get_audio_url(video_id):
     return audio_url
 
 def get_all_audio_urls():
-    for video in Videos.query.all():
+    for video in Updated_videos.query.all():
         video.audio_url = get_audio_url(video.video_id)
     db.session.commit()
 
@@ -142,7 +142,7 @@ def get_files():
     for i in dict.keys(beat_folder_id):
         if 'Mixdown' in return_directory(beat_folder_id[i]):
             try:
-                video = Videos.query.filter_by(video_beat_name=i).first()
+                video = Updated_videos.query.filter_by(video_beat_name=i).first()
                 video.beat_mixdowns = return_directory(beat_folder_id[i])['Mixdown']
                 db.session.commit()
             except:
@@ -150,20 +150,44 @@ def get_files():
                 print('Error 1: Video not in database. Or other error.')
         if 'Stems' in return_directory(beat_folder_id[i]):
             try:
-                video = Videos.query.filter_by(video_beat_name=i).first()
+                video = Updated_videos.query.filter_by(video_beat_name=i).first()
                 video.beat_stems = return_directory(beat_folder_id[i])['Stems']
                 db.session.commit()
             except:
                 db.session.rollback()
                 print('Error 2: Video not in database. Or other error.')
 
+def copy_to_Videos():
+
+    db.session.query(Videos).delete()
+
+    for update_row in Updated_videos.query.all():
+        live_row = Videos(
+            video_id = update_row.video_id,
+            video_title = update_row.video_title,
+            video_publishedAt = update_row.video_publishedAt,
+            video_thumbnail = update_row.video_thumbnail,
+            video_description = update_row.video_description,
+            video_beat_name = update_row.video_beat_name,
+            video_tags = update_row.video_tags,
+            beat_mixdowns = update_row.beat_mixdowns,
+            beat_stems = update_row.beat_stems,
+            audio_url = update_row.audio_url
+            )
+        db.session.add(live_row)
+
+    db.session.query(Updated_videos).delete()
+
+    db.session.commit()
+
+
 def add_uploads_to_database():
     jobs = q.enqueue_many(
     [
-        Queue.prepare_data(clear_database, job_id='clear_database'),
         Queue.prepare_data(get_videos, job_id='get_videos'),
         Queue.prepare_data(get_all_audio_urls, job_id='get_all_audio_urls'),
         Queue.prepare_data(get_files, job_id='get_files'),
+        Queue.prepare_data(copy_to_Videos, job_id='copy_to_Videos')
     ]
     )
 
