@@ -10,8 +10,9 @@ SCOPES = ['https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/a
 
 creds = None
 
-with open('token.json', 'w') as f: # Creates a credentials.json file from the string in the environment variable, BEAT_WEBSITE_OAUTH_CREDENTIALS. This string was obtained from a json file downlaoded from the google developer console.
-    f.write(TOKEN_JSON)
+if TOKEN_JSON:
+    with open('token.json', 'w') as f: # Creates a credentials.json file from the string in the environment variable, BEAT_WEBSITE_OAUTH_CREDENTIALS. This string was obtained from a json file downlaoded from the google developer console.
+        f.write(TOKEN_JSON)
 
 if os.path.exists('token.json'):
     creds = Credentials.from_authorized_user_file('token.json', SCOPES)
