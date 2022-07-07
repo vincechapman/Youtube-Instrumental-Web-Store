@@ -61,3 +61,112 @@ a:link { text-decoration: none; color: inherit; }
 a:visited { text-decoration: none; color: inherit;}
 a:hover { text-decoration: none; }
 a:active { text-decoration: none; }
+
+
+/* Seek bar formatting */
+
+.audio-player {
+    background-color: rgb(31, 31, 31);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    margin: 0;
+    width: 100vw;
+    height: 75px;
+    max-width: none;
+    z-index: 100;
+}
+
+.audio-player > * {
+    display: block;
+}
+
+.audio-player > .play {
+    margin: 0px auto;
+}
+
+input.seek {
+    width: 100%;
+    margin: 0;
+}
+
+
+
+
+
+
+
+
+input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+  }
+input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 12.8px;
+    cursor: pointer;
+    box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+    background: #000000;
+    border: 0px solid #000101;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+    border: 0px solid #000000;
+    height: 20px;
+    width: 20px;
+    border-radius: 100%;
+    background: #00a37a;
+    cursor: pointer;
+    -webkit-appearance: none;
+    margin-top: -3.6px;
+}
+
+input[type=range]::-moz-range-track {
+    width: 100%;
+    height: 12.8px;
+    cursor: pointer;
+    box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+    background: #ac51b5;
+    border-radius: 25px;
+    border: 0px solid #000101;
+}
+
+input[type=range]::-moz-range-thumb {
+    box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+    border: 0px solid #000000;
+    height: 20px;
+    width: 39px;
+    border-radius: 7px;
+    background: #65001c;
+    cursor: pointer;
+}
+
+/* Consider webkit browser compatability */
+
+
+
+
+
+
+/* Scroll bars */
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+background: #1f1f1f;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+background: rgb(77, 77, 77);
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+background: rgb(150, 150, 150);
+}

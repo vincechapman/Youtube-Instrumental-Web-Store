@@ -4,23 +4,24 @@
 
 {% block head %}
 <link rel="stylesheet" href="{{url_for('static', filename='styles/beatlibrary.css')}}"/>
-<audio id="audio" src=""></audio>
+<audio id="audio" src="{{videos[0].audio_url}}"></audio> <!-- Defaults to first beat -->
 {% endblock %}
 
 {% block body %}
 <h1>Beat Library</h1>
 <p>Browse my collection of beats.</p>
 
-<progress id="seekbar" value="0"></progress>
-
-<!-- <input
-    id="seek"
-    type="range"
-    min="0"
-    max="100"
-    value="0"
-    step="0.0001"
-/> -->
+<div class="audio-player">
+    <input
+      class="seek"
+      type="range"
+      min="0"
+      max="100"
+      value="0"
+      step="0.0001"
+    />
+    <i class="play fa-solid fa-play fa-xl"></i>
+</div>
 
 <div id="beat-library">
     {% for video in videos %}
