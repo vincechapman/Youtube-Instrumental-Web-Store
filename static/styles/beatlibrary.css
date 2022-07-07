@@ -66,7 +66,7 @@ a:active { text-decoration: none; }
 /* Seek bar formatting */
 
 .audio-player {
-    background-color: rgb(31, 31, 31);
+    background-color: rgb(0, 9, 12);
     position: fixed;
     bottom: 0;
     left: 0;
