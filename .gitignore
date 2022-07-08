@@ -7,6 +7,7 @@ Virtual Environment
 credentials.json
 token.json
 main.db
+dump.rdb
 
 
 # Created by https://www.toptal.com/developers/gitignore/api/python,windows,visualstudiocode,venv
