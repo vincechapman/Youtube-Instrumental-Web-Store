@@ -12,14 +12,14 @@ q = Queue(connection=conn)
 '''----------------------------------------------------------------------------------------------------
 IMPORTING ENVIRONMENT VARIABLES'''
 
-BEAT_WEBSITE_OAUTH_CREDENTIALS = os.environ.get('BEAT_WEBSITE_OAUTH_CREDENTIALS')
-PAYPAL_CLIENT_ID = os.environ.get('PAYPAL_CLIENT_ID')
-PAYPAL_CLIENT_SECRET = os.environ.get('PAYPAL_CLIENT_SECRET')
-PAYPAL_LIVE = (os.environ.get('PAYPAL_LIVE')).lower()
-YOUTUBE_API_KEY = os.environ.get('YOUTUBE_API_KEY')
+BEAT_WEBSITE_OAUTH_CREDENTIALS = os.environ['BEAT_WEBSITE_OAUTH_CREDENTIALS']
+PAYPAL_CLIENT_ID = os.environ['PAYPAL_CLIENT_ID']
+PAYPAL_CLIENT_SECRET = os.environ['PAYPAL_CLIENT_SECRET']
+PAYPAL_LIVE = os.environ['PAYPAL_LIVE']
+YOUTUBE_API_KEY = os.environ['YOUTUBE_API_KEY']
 TOKEN_JSON = os.environ.get('TOKEN_JSON')
 
-DATABASE_URL = os.environ.get("DATABASE_URL")
+DATABASE_URL = os.environ['DATABASE_URL']
 if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 

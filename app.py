@@ -58,12 +58,12 @@ def update_database():
 '''-------------------------------------------------------------------------------------------------------------------
 PAYPAL API - ACCEPTING PAYMENTS'''
 
-if PAYPAL_LIVE == 'true':
+if PAYPAL_LIVE.lower() == 'true':
     environment = LiveEnvironment(
         client_id=PAYPAL_CLIENT_ID,
         client_secret=PAYPAL_CLIENT_SECRET
         )
-elif PAYPAL_LIVE == 'false':
+elif PAYPAL_LIVE.lower() == 'false':
     environment = SandboxEnvironment(
         client_id=PAYPAL_CLIENT_ID,
         client_secret=PAYPAL_CLIENT_SECRET
@@ -203,17 +203,20 @@ def receipt(order_id, lease_id):
 
     stems, mixdowns = fetch_beat_files(video_beat_name)
 
+    from drive import return_links
+    link_for_stems, link_for_mixdown = return_links(video_beat_name) 
+
     from flask import request
 
     if request.method == 'POST':
-        if request.form['submit'] == 'mixdowns':
-            return download_all_files(video_beat_name, mixdowns, 'mixdowns')
-        elif request.form['submit'] == 'stems':
-            return download_all_files(video_beat_name, stems, 'stems')
-        elif request.form['submit'] == 'lease':
+        # if request.form['submit'] == 'mixdowns':
+        #     return download_all_files(video_beat_name, mixdowns, 'mixdowns')
+        # elif request.form['submit'] == 'stems':
+        #     return download_all_files(video_beat_name, stems, 'stems')
+        if request.form['submit'] == 'lease':
             return export_lease(lease_id, f'Licence - {video_beat_name} ({order_id}).pdf')
     else:
-        return render_template('receipt.html', order_id=order_id, video=video, stems=stems, mixdowns=mixdowns)
+        return render_template('receipt.html', order_id=order_id, video=video, stems=stems, mixdowns=mixdowns, link_for_stems=link_for_stems, link_for_mixdown=link_for_mixdown)
 
 
 '''----------------------------------------------------------------------------------------------------

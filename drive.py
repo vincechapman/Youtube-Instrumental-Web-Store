@@ -55,9 +55,11 @@ def fetch_beat_files(beat_name):
         beat_folder_dir = return_directory(beat_folder_id)
 
         stems_folder_id = beat_folder_dir['Stems']
+        print(f'Stems folder ID: {stems_folder_id}')
         stems = return_directory(stems_folder_id, mode='files-only')
  
         mixdown_folder_id = beat_folder_dir['Mixdown']
+        print(f'Mixdown folder ID: {mixdown_folder_id}')
         mixdowns = return_directory(mixdown_folder_id, mode='files-only')
     except KeyError:
         print(f"Either there's no folder called '{beat_name}', or there IS a folder called '{beat_name}' but 'Stems' or 'Mixdown' are missing from that folder.")
@@ -127,5 +129,40 @@ def download_all_files(beat_name, download_order, label):
     zip_stream.seek(0)
     return send_file(zip_stream, as_attachment=True, download_name=f"{label} - '{beat_name}'.zip")
 
+def return_links(beat_name):
+
+    link_to_stems, link_to_mixdowns = None, None
+
+    try:
+        beat_folder_id = return_directory(start_folder_id)[beat_name]
+
+    except KeyError:
+        print(f"There is no folder called '{beat_name}'")
+
+    else:
+        try:
+            stems_folder_id = return_directory(beat_folder_id)['Stems']
+            print(f'Stems folder ID: {stems_folder_id}')
+
+        except KeyError:
+            print(f'There is no stems folder for {beat_name}.')
+
+        else:
+            link_to_stems = f'https://drive.google.com/drive/folders/{stems_folder_id}'
+
+
+        try:
+            mixdown_folder_id = return_directory(beat_folder_id)['Mixdown']
+            print(f'Mixdown folder ID: {mixdown_folder_id}')
+
+        except KeyError:
+            print(f'There is no mixdown folder for {beat_name}.')
+
+        else:
+            link_to_mixdowns = f'https://drive.google.com/drive/folders/{mixdown_folder_id}'
+
+    finally:
+        return link_to_stems, link_to_mixdowns
+
 if __name__ == '__main__':
-    fetch_beat_files('The Abyss')
+    print(return_links('The Abyss'))

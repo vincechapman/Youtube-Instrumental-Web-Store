@@ -31,15 +31,18 @@
     {% endfor %}
     {% endif %}
 
-    <form action="#" method="post">
-        {% if video.beat_mixdowns %}
+   <form action="#" method="post">
+        <!-- {% if video.beat_mixdowns %}
         <button type="submit" name="submit" value="mixdowns">Download mixdowns</button>
         {% endif %}
         {% if video.beat_stems %}
         <button type="submit" name="submit" value="stems">Download stems</button>
-        {% endif %}
+        {% endif %} -->
+        <a href="{{link_for_stems}}" target="_blank">Download stems</a>
+        <a href="{{link_for_mixdown}}" target="_blank">Download mixdowns</a>
         <button type="submit" name="submit" value="lease">Download lease</button>
     </form>
+
 
 </div>
 
