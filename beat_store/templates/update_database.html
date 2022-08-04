@@ -26,30 +26,30 @@
 
     {% for i in videos %}
     <tr>
-        <td>{{ i.video_id }}</td>
-        <td>{{ i.video_title }}</td>
-        <td>{{ i.video_beat_name }}</td>
+        <td>{{ i.id }}</td>
+        <td>{{ i.title }}</td>
+        <td>{{ i.beat_name }}</td>
 
-        {% if i.video_tags %}
-        <td>{{ i.video_tags }}</td>
+        {% if i.tags %}
+        <td>{{ i.tags }}</td>
         {% else %}
         <td></td>
         {% endif %}
 
-        {% if i.beat_mixdowns %}
+        {% if i.link_to_mixdowns %}
         <td>True</td>
         {% else %}
         <td></td>
         {% endif %}
 
-        {% if i.beat_stems %}
+        {% if i.link_to_stems %}
         <td>True</td>
         {% else %}
         <td></td>
         {% endif %}
 
-        {% if i.audio_url %}
-        <td>{{ i.audio_url }}</td>
+        {% if i.link_to_video_audio %}
+        <td>{{ i.link_to_video_audio }}</td>
         {% else %}
         <td></td>
         {% endif %}

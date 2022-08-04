@@ -15,18 +15,16 @@
 # [START docs_quickstart]
 from __future__ import print_function
 
-from googleapiclient.discovery import build
 from datetime import datetime
 
 import io
 
-from googleapiclient.http import MediaIoBaseDownload
-from flask import send_file
-
-import io
-
 import google.auth
+from googleapiclient.http import MediaIoBaseDownload
 from googleapiclient.errors import HttpError
+from googleapiclient.discovery import build
+
+from flask import send_file
 
 
 '''---------------------------

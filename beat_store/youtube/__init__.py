@@ -1,25 +1,20 @@
-from __future__ import print_function
+import json
 
-from googleapiclient.discovery import build
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
 from requests import HTTPError
 
-from models import Updated_videos, Videos, clear_database
-from config import YOUTUBE_API_KEY, db, q
+from googleapiclient.discovery import build
+youtube = build('youtube', 'v3', developerKey=os.environ['YOUTUBE_API_KEY'])
 
-from rq import Queue
-
-import pafy_modified
-import requests
-
-from drive import return_directory, start_folder_id
-
-youtube_api_key = YOUTUBE_API_KEY # Currently unrestricted - consider restricting. Don't keep this in this file. Look into using environment variables for secret keys.
-youtube = build('youtube', 'v3', developerKey=youtube_api_key)
-
-channel_id = 'UCn2iypP7ektcWULuNKGdcSQ'
+channel_id = os.environ['YOUTUBE_CHANNEL_ID']
 uploads_id = channel_id[0] + 'U' + channel_id[2:]
 
-def fetch_upload_ids():
+
+def get_video_ids():
+    
     # Produces a list of IDs for each video the channel has uploaded
     keep_looping = True
     page_token = None
@@ -50,6 +45,7 @@ def fetch_upload_ids():
     
     return video_id_list
 
+
 def process_description(video_description, search_key):
     
     delimiter = '|'
@@ -67,16 +63,18 @@ def process_description(video_description, search_key):
 
 def get_videos():
 
-    video_id_list = fetch_upload_ids()
+    video_id_list = get_video_ids()
 
     keep_looping = True
     while keep_looping:
+
         if len(video_id_list) < 50:
             request = youtube.videos().list(
                     part="snippet,contentDetails",
                     id=video_id_list[0:len(video_id_list)]
                 )
             keep_looping = False
+
         else:
             request = youtube.videos().list(
                     part="snippet,contentDetails",
@@ -86,29 +84,41 @@ def get_videos():
 
         try:
             response = request.execute()
+
         except HTTPError as e:
             print('Error response status code : {0}, reason : {1}'.format(e.status_code, e.error_details))
 
         # This takes those details and adds them to our database.
 
         for video in response['items']:
-            video_to_add = Updated_videos(
-                video_id = video['id'],
-                video_title = video['snippet']['title'],
-                video_publishedAt = video['snippet']['publishedAt'],
-                video_thumbnail = video['snippet']['thumbnails']['medium']['url'],
-                video_description = video['snippet']['description'],
-                video_beat_name = process_description(video['snippet']['description'], 'Beat name'),
-                video_tags = process_description(video['snippet']['description'], 'Tags'),
-                )
-            db.session.add(video_to_add)
-    try:
-        db.session.commit()
-    except:
-        db.session.rollback()
-        
+
+            video_id = video['id']
+            title = video['snippet']['title']
+            published_at = video['snippet']['publishedAt']
+            thumbnail = video['snippet']['thumbnails']['medium']['url']
+            description = video['snippet']['description']
+            beat_name = process_description(video['snippet']['description'], 'Beat name')
+            tags = process_description(video['snippet']['description'], 'Tags')
+
+            from .. db import get_db
+
+            db = get_db()
+            cursor = db.cursor()
+
+            cursor.execute('DELETE FROM video WHERE id = ?;', (video_id,))
+
+            cursor.execute("""
+                INSERT INTO video (id, title, published_at, thumbnail, description, beat_name, tags)
+                VALUES (?, ?, ?, ?, ?, ?, ?);""", (video_id, title, published_at, thumbnail, description, beat_name, tags))
+
+            db.commit()
+
+
+from .. import pafy_modified
+import requests
+
 def get_audio_url(video_id):
-    
+
     print(f'\nFetching audio for {video_id}...')
 
     verfied = False
@@ -129,10 +139,28 @@ def get_audio_url(video_id):
         
     return audio_url
 
+
 def get_all_audio_urls():
-    for video in Updated_videos.query.all():
-        video.audio_url = get_audio_url(video.video_id)
-    db.session.commit()
+
+    from .. db import get_db
+    db = get_db()
+    cursor = db.cursor()
+
+    data = cursor.execute('SELECT id FROM video').fetchall()
+
+    # Formatting the data returned by SQLite
+    video_id_list = []
+    for row in data:
+        video_id_list.append(row[0])
+
+    # Adding/updating link_to_video_audio cells in table
+    for id in video_id_list:
+        cursor.execute("""
+            UPDATE video
+            SET link_to_video_audio = ?
+            WHERE id = ?;""", (get_audio_url(id), id))
+    
+    db.commit()
 
 
 def get_files():
@@ -157,39 +185,7 @@ def get_files():
                 db.session.rollback()
                 print('Error 2: Video not in database. Or other error.')
 
-def copy_to_Videos():
-
-    db.session.query(Videos).delete()
-
-    for update_row in Updated_videos.query.all():
-        live_row = Videos(
-            video_id = update_row.video_id,
-            video_title = update_row.video_title,
-            video_publishedAt = update_row.video_publishedAt,
-            video_thumbnail = update_row.video_thumbnail,
-            video_description = update_row.video_description,
-            video_beat_name = update_row.video_beat_name,
-            video_tags = update_row.video_tags,
-            beat_mixdowns = update_row.beat_mixdowns,
-            beat_stems = update_row.beat_stems,
-            audio_url = update_row.audio_url
-            )
-        db.session.add(live_row)
-
-    db.session.query(Updated_videos).delete()
-
-    db.session.commit()
-
-
-def add_uploads_to_database():
-    jobs = q.enqueue_many(
-    [
-        Queue.prepare_data(get_videos, job_id='get_videos'),
-        Queue.prepare_data(get_all_audio_urls, job_id='get_all_audio_urls'),
-        Queue.prepare_data(get_files, job_id='get_files'),
-        Queue.prepare_data(copy_to_Videos, job_id='copy_to_Videos')
-    ]
-    )
 
 if __name__ == '__main__':
-    add_uploads_to_database()
+    get_videos()
+    get_all_audio_urls()

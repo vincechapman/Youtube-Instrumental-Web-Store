@@ -25,16 +25,16 @@
 <div id="beat-library">
     {% for video in videos %}
     <div class="beat grid-container">
-        <img class="grid-item" src="{{video.video_thumbnail}}" alt="thumbnail" height="100%">
+        <img class="grid-item" src="{{video.thumbnail}}" alt="thumbnail" height="100%">
         <div class="grid-item">
-            <h4>{{video.video_beat_name}}</h4>
+            <h4>{{video.beat_name}}</h4>
             <p>135 BPM | No Uncleared Samples | Upbeat</p>
         </div>
         <div>
-            <form class="grid-item" action="{{url_for('beat', video_id=video.video_id)}}">
+            <form class="grid-item" action="{{url_for('beats.beat', video_id=video.id)}}">
                 <button type="submit"><i class="fa-solid fa-cart-shopping"></i><p>Buy</p></button>
             </form>
-            <button id="play-button-{{video.video_id}}" class="play-button" value="{{video.audio_url}}"><i class="fa-solid fa-play"></i>Play</button>
+            <button id="play-button-{{video.id}}" class="play-button" value="{{video.link_to_video_audio}}"><i class="fa-solid fa-play"></i>Play</button>
         </div>
     </div>
     {% endfor %}
