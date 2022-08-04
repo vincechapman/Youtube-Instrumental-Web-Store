@@ -163,27 +163,27 @@ def get_all_audio_urls():
     db.commit()
 
 
-def get_files():
+# def get_files():
 
-    beat_folder_id = return_directory(start_folder_id)
+#     beat_folder_id = return_directory(start_folder_id)
 
-    for i in dict.keys(beat_folder_id):
-        if 'Mixdown' in return_directory(beat_folder_id[i]):
-            try:
-                video = Updated_videos.query.filter_by(video_beat_name=i).first()
-                video.beat_mixdowns = return_directory(beat_folder_id[i])['Mixdown']
-                db.session.commit()
-            except:
-                db.session.rollback()
-                print('Error 1: Video not in database. Or other error.')
-        if 'Stems' in return_directory(beat_folder_id[i]):
-            try:
-                video = Updated_videos.query.filter_by(video_beat_name=i).first()
-                video.beat_stems = return_directory(beat_folder_id[i])['Stems']
-                db.session.commit()
-            except:
-                db.session.rollback()
-                print('Error 2: Video not in database. Or other error.')
+#     for i in dict.keys(beat_folder_id):
+#         if 'Mixdown' in return_directory(beat_folder_id[i]):
+#             try:
+#                 video = Updated_videos.query.filter_by(video_beat_name=i).first()
+#                 video.beat_mixdowns = return_directory(beat_folder_id[i])['Mixdown']
+#                 db.session.commit()
+#             except:
+#                 db.session.rollback()
+#                 print('Error 1: Video not in database. Or other error.')
+#         if 'Stems' in return_directory(beat_folder_id[i]):
+#             try:
+#                 video = Updated_videos.query.filter_by(video_beat_name=i).first()
+#                 video.beat_stems = return_directory(beat_folder_id[i])['Stems']
+#                 db.session.commit()
+#             except:
+#                 db.session.rollback()
+#                 print('Error 2: Video not in database. Or other error.')
 
 
 if __name__ == '__main__':
