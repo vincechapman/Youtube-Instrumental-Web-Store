@@ -146,24 +146,26 @@ def receipt(order_id, lease_id):
     response = client.execute(request)
 
     video_id = response.result.purchase_units[0]['custom_id']
+
+    return 'reached reciept page'
         
-    video = Videos.query.get(video_id)
-    video_beat_name = video.video_beat_name
+    # video = Videos.query.get(video_id)
+    # video_beat_name = video.video_beat_name
 
-    stems, mixdowns = fetch_beat_files(video_beat_name)
+    # stems, mixdowns = fetch_beat_files(video_beat_name)
 
-    from drive import return_links
-    link_for_stems, link_for_mixdown = return_links(video_beat_name) 
+    # from drive import return_links
+    # link_for_stems, link_for_mixdown = return_links(video_beat_name) 
 
-    from flask import request
+    # from flask import request
 
-    if request.method == 'POST':
-        # if request.form['submit'] == 'mixdowns':
-        #     return download_all_files(video_beat_name, mixdowns, 'mixdowns')
-        # elif request.form['submit'] == 'stems':
-        #     return download_all_files(video_beat_name, stems, 'stems')
-        if request.form['submit'] == 'lease':
-            return export_lease(lease_id, f'Licence - {video_beat_name} ({order_id}).pdf')
-    else:
-        return render_template('receipt.html', order_id=order_id, video=video, stems=stems, mixdowns=mixdowns, link_for_stems=link_for_stems, link_for_mixdown=link_for_mixdown)
+    # if request.method == 'POST':
+    #     # if request.form['submit'] == 'mixdowns':
+    #     #     return download_all_files(video_beat_name, mixdowns, 'mixdowns')
+    #     # elif request.form['submit'] == 'stems':
+    #     #     return download_all_files(video_beat_name, stems, 'stems')
+    #     if request.form['submit'] == 'lease':
+    #         return export_lease(lease_id, f'Licence - {video_beat_name} ({order_id}).pdf')
+    # else:
+    #     return render_template('receipt.html', order_id=order_id, video=video, stems=stems, mixdowns=mixdowns, link_for_stems=link_for_stems, link_for_mixdown=link_for_mixdown)
 
