@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # PAYPAL_LIVE = os.environ['PAYPAL_LIVE']
-PAYPAL_LIVE = False
+PAYPAL_LIVE = 'False'
 PAYPAL_CLIENT_ID = os.environ['PAYPAL_CLIENT_ID']
 PAYPAL_CLIENT_SECRET = os.environ['PAYPAL_CLIENT_SECRET']
 
