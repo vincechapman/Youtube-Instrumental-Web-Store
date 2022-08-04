@@ -3,9 +3,9 @@ import platform
 import requests
 
 from paypalhttp import HttpClient
-from paypalcheckoutsdk.config import __version__
-from paypalcheckoutsdk.core.util import older_than_27
-from paypalcheckoutsdk.core import AccessTokenRequest, AccessToken, RefreshTokenRequest
+from .. config import __version__
+from . util import older_than_27
+from . import AccessTokenRequest, AccessToken, RefreshTokenRequest
 
 
 USER_AGENT = "PayPalSDK/Checkout-Python-SDK %s (%s)" % \

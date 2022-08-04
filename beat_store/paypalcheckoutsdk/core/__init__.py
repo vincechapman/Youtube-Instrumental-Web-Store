@@ -1,7 +1,7 @@
 
-from paypalcheckoutsdk.core.access_token import *
-from paypalcheckoutsdk.core.access_token_request import *
-from paypalcheckoutsdk.core.refresh_token_request import *
-from paypalcheckoutsdk.core.environment import *
-from paypalcheckoutsdk.core.paypal_http_client import *
-from paypalcheckoutsdk.core.util import *
+from . access_token import *
+from . access_token_request import *
+from . refresh_token_request import *
+from . environment import *
+from . paypal_http_client import *
+from . util import *

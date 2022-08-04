@@ -1,3 +1,3 @@
 name = "paypalcheckoutsdk"
-from paypalcheckoutsdk.config import *
+from . config import *
 
