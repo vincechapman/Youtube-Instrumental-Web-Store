@@ -10,4 +10,4 @@ def task_handler():
     print('Job was queued')
     print(request.values)
 
-    return 'Job was queued - return'
+    return 200
