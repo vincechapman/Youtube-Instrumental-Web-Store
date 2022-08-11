@@ -1,4 +1,6 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
+
+print('This file has been read.')
 
 worker = Flask(__name__)
 
@@ -19,4 +21,5 @@ def task_handler():
     print('\nGet json:')
     print(request.get_json())
 
-    return 200
+    resp = jsonify(success=True)
+    return resp
