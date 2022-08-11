@@ -18,13 +18,13 @@ def pickle(obj):
     return pickled
 
 
-def queue_function(queue, function, *args, **kwargs):
+def queue_function(queue, message, *args, **kwargs):
 
     args = pickle(args)
     kwargs = pickle(kwargs)
 
     response = queue.send_message(
-        MessageBody=pickle(function),
+        MessageBody=message,
         MessageAttributes={
             'args': {
                 'StringValue': args,
