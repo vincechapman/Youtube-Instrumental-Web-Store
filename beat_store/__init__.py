@@ -54,7 +54,12 @@ def create_app(test_config=None):
     app.register_blueprint(processing_orders.bp)
 
 
+    from . import test_queue
+    app.register_blueprint(test_queue.bp)
+
+
     return app
+
 
 def get_domain():
     from flask import request
