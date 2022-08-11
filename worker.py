@@ -2,7 +2,7 @@ from flask import Flask, request
 
 worker = Flask(__name__)
 
-@worker.route('/', method=['POST'])
+@worker.route('/', methods=['POST'])
 def worker():
 
     print('Job was queued')
