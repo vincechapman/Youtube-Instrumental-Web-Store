@@ -1,7 +1,5 @@
 from flask import Flask, request
 
-print('This file has been read.')
-
 worker = Flask(__name__)
 
 @worker.route('/', methods=['POST'])
