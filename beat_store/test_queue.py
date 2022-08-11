@@ -39,6 +39,8 @@ def queue_function(queue, message, *args, **kwargs):
 @bp.route('/send_request', methods=['GET', 'POST'])
 def send_request():
 
+    message_id = 'Send a message first.'
+
     if request.method == 'POST':
 
         import os
@@ -58,13 +60,15 @@ def send_request():
 
         message = request.form['message']
 
-        queue_function(queue, message)
+        message_id = queue_function(queue, message)
 
-    return '''
+    return f'''
         <h1>Send a message to SQS queue</h1>
 
         <form action="#" method="post">
             <input type="text" name="message">
             <input type="submit" value="submit">
         </form>
+
+        ID of last message: {message_id}
         '''
