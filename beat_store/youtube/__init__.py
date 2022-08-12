@@ -12,6 +12,11 @@ youtube = build('youtube', 'v3', developerKey=os.environ['YOUTUBE_API_KEY'])
 channel_id = os.environ['YOUTUBE_CHANNEL_ID']
 uploads_id = channel_id[0] + 'U' + channel_id[2:]
 
+import sqlite3
+
+db = sqlite3.connect(
+    'instance/flaskr.sqlite',
+    detect_types=sqlite3.PARSE_DECLTYPES)
 
 def get_video_ids():
     
@@ -45,7 +50,6 @@ def get_video_ids():
     
     return video_id_list
 
-
 def process_description(video_description, search_key):
     
     delimiter = '|'
@@ -59,7 +63,6 @@ def process_description(video_description, search_key):
                 temp = temp[0]
                
     return str(temp)
-
 
 def get_videos():
 
@@ -100,9 +103,6 @@ def get_videos():
             beat_name = process_description(video['snippet']['description'], 'Beat name')
             tags = process_description(video['snippet']['description'], 'Tags')
 
-            from .. db import get_db
-
-            db = get_db()
             cursor = db.cursor()
 
             cursor.execute('DELETE FROM video WHERE id = ?;', (video_id,))
@@ -112,7 +112,7 @@ def get_videos():
                 VALUES (?, ?, ?, ?, ?, ?, ?);""", (video_id, title, published_at, thumbnail, description, beat_name, tags))
 
             db.commit()
-
+        
 
 from .. import pafy_modified
 import requests
@@ -142,8 +142,6 @@ def get_audio_url(video_id):
 
 def get_all_audio_urls():
 
-    from .. db import get_db
-    db = get_db()
     cursor = db.cursor()
 
     data = cursor.execute('SELECT id FROM video').fetchall()
@@ -185,6 +183,21 @@ def get_all_audio_urls():
 #                 db.session.rollback()
 #                 print('Error 2: Video not in database. Or other error.')
 
+def add_uploads_to_database():
+
+    from rq import Queue
+    from .. worker import conn
+
+    q = Queue(connection=conn)
+
+    jobs = q.enqueue_many(
+    [
+        Queue.prepare_data(get_videos, job_id='get_videos'),
+        Queue.prepare_data(get_all_audio_urls, job_id='get_all_audio_urls'),
+        # Queue.prepare_data(get_files, job_id='get_files'),
+        # Queue.prepare_data(copy_to_Videos, job_id='copy_to_Videos')
+    ]
+    )
 
 if __name__ == '__main__':
     get_videos()

@@ -10,9 +10,9 @@ def update_database():
         # from . youtube import add_uploads_to_database
         from . import youtube
         # youtube.get_videos()
-        # youtube.get_audio_url('1OQxbuPRiWA')
-        youtube.get_all_audio_urls()
-        # add_uploads_to_database()
+        # youtube.get_all_audio_urls()
+        youtube.add_uploads_to_database()
+            
   
     from . db import get_db
 
