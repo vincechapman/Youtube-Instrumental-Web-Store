@@ -27,6 +27,8 @@ def send_request():
 
         message_id = job
 
+        
+
     return f'''
         <h1>Send a message to SQS queue</h1>
 
@@ -35,5 +37,10 @@ def send_request():
             <input type="submit" value="submit">
         </form>
 
-        ID of last message: {message_id}
+        <div>ID of last message: {message_id}</div>
+        
+        <div>Job queue:</div>
+        {queue.jobs}
+
+
         '''
