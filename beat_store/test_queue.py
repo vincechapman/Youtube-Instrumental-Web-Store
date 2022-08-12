@@ -5,9 +5,6 @@ If successful, we can check if we're able to use those messages to trigger funct
 
 from flask import Blueprint, request
 from rq import Queue
-from . worker import conn
-
-queue = Queue('default', connection=conn)
 
 bp = Blueprint('test_queue', __name__, url_prefix='/queue')
 
@@ -17,15 +14,23 @@ def send_request():
 
     message_id = 'Send a message first.'
 
+    job_list = []
+
     if request.method == 'POST':
 
+        from . worker import conn
+
         count_to = int(request.form['message'])
+
+        queue = Queue('default', connection=conn)
 
         from . import test_function
 
         job = queue.enqueue(test_function, count_to)
 
         message_id = job
+
+        job_list = queue.jobs
 
         
 
@@ -40,7 +45,7 @@ def send_request():
         <div>ID of last message: {message_id}</div>
         
         <div>Job queue:</div>
-        {queue.jobs}
+        {job_list}
 
 
         '''
