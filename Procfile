@@ -1,2 +1,2 @@
 web: gunicorn application:application
-worker: python worker.py
+rq_worker: rq worker
