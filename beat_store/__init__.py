@@ -65,3 +65,16 @@ def get_domain():
     from flask import request
     domain = request.root_url[:-1]
     return domain
+
+
+def test_function(count_to):
+    from time import sleep
+    print('\nCountdown initiated\n')
+
+    for i in range(count_to, 0, -1):
+        print(i)
+        sleep(1)
+
+    print()
+
+    return 'And this was returned.'
