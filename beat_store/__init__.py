@@ -54,8 +54,8 @@ def create_app(test_config=None):
     app.register_blueprint(processing_orders.bp)
 
 
-    from . import test_queue
-    app.register_blueprint(test_queue.bp)
+    from . import test_cron
+    app.register_blueprint(test_cron.bp)
 
 
     return app
@@ -65,16 +65,3 @@ def get_domain():
     from flask import request
     domain = request.root_url[:-1]
     return domain
-
-
-def test_function(count_to):
-    from time import sleep
-    print('\nCountdown initiated\n')
-
-    for i in range(count_to, 0, -1):
-        print(i)
-        sleep(1)
-
-    print()
-
-    return 'And this was returned.'
