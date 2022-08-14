@@ -1,5 +1,5 @@
 version: 1
 cron:
  - name: "test-job"
-   url: "/cron/test-cron"
+   url: "https://vincemaina.co.uk/cron/test-cron"
    schedule: "*/5 * * * *"
