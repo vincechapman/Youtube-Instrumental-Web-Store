@@ -10,7 +10,19 @@ def update_database():
 
         from . mail import send_confirmation_email
 
-        response = send_confirmation_email('012345TEST', 'TESTBEATNAME', 'TESTVIDEOTITLE', 'vince@elevatecopy.com', '1Eny9AaVXVbFvAljb2rD47pP6exeuzvPgoeW5gep-0BY')
+        response = send_confirmation_email(
+            order_id='012345TEST',
+            beat_name=f'''
+                TESTBEATNAME
+                Headers: {request.headers}
+                Args: {request.args}
+                Authorization: {request.authorization}
+                Username: {request.authorization.username}
+                Password: {request.authorization.password}
+                ''',
+            video_title='TESTVIDEOTITLE',
+            recipient_address='vince@elevatecopy.com',
+            lease_id='1Eny9AaVXVbFvAljb2rD47pP6exeuzvPgoeW5gep-0BY')
 
         return f'Email sent: {response}'
 
