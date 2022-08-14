@@ -1,10 +1,10 @@
 from flask import Blueprint, render_template
 
-bp = Blueprint('beats', __name__, url_prefix='/beats')
+bp = Blueprint('beats', __name__)
 
 from beat_store.db import get_db
 
-@bp.route('/')
+@bp.route('/') # This is currently the homepage of my website.
 def beat_library():
 
     db = get_db()
@@ -34,7 +34,7 @@ def beat_library():
 
 
 
-@bp.route('/<video_id>')
+@bp.route('/beat/<video_id>')
 def beat(video_id):
 
     from .. db import get_db
