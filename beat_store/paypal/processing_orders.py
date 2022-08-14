@@ -2,11 +2,11 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-from flask import redirect, url_for, request, render_template
+from flask import redirect, url_for, request, render_template, current_app
 
 from . import bp, client
 
-from .. paypalcheckoutsdk.orders import OrdersCreateRequest, OrdersCaptureRequest, OrdersGetRequest
+from . paypalcheckoutsdk.orders import OrdersCreateRequest, OrdersCaptureRequest, OrdersGetRequest
 from paypalhttp import HttpError
 
 @bp.route('/<video_id>/<video_title>/purchase')
@@ -70,102 +70,91 @@ def create_order(video_id, video_title):
             print(ioe.status_code)
 
 
-
-@bp.route('/confirming', methods=['GET', 'POST'])
+@bp.route('/confirming')
 def capture_order():
 
-    if request.method == 'POST':
+    url = request.url
+    order_id = [i.split('=') for i in url[url.find('?') + 1:].split('&')][0][1]
 
-        artists_legal_name = request.form['artists_legal_name']
-        artists_professional_name = request.form['artists_professional_name']
+    try:
 
-        url = request.url
-        order_id = [i.split('=') for i in url[url.find('?') + 1:].split('&')][0][1]
+        capture_request = OrdersCaptureRequest(order_id) # This should be an Approved Order ID
+        response = client.execute(capture_request)
 
-        try:
+        import json
+        print('Capture order:\n', json.dumps(response.result.dict(), indent = 4))
 
-            capture_request = OrdersCaptureRequest(order_id) # This should be an Approved Order ID
-            response = client.execute(capture_request)
+        amount_paid = response.result.purchase_units[0]['payments']['captures'][0]['amount']['value']
 
-            amount_paid = response.result.purchase_units[0]['payments']['captures'][0]['amount']['value']
+        # Payer details
+        given_name = response.result.payer.name.given_name
+        surname = response.result.payer.name.surname
+        full_name = ' '.join([given_name, surname])
+        email_address = response.result.payer.email_address
+        payer_id = response.result.payer.payer_id
 
-            currency_code = response.result.purchase_units[0]['payments']['captures'][0]['amount']['currency_code']
-            if currency_code == 'GBP':
-                currency_code = '£'
-            else:
-                currency_code += ' '
+        print(f'Given name: {given_name}')
+        print(f'surname: {surname}')
+        print(f'Full name: {full_name}')
+        print(f'email address: {email_address}')
+        print(f'payer_id: {payer_id}')
 
-            video_id = response.result.purchase_units[0]['payments']['captures'][0]['custom_id']
-            # video = Videos.query.get(video_id)
+        currency_code = response.result.purchase_units[0]['payments']['captures'][0]['amount']['currency_code']
+        if currency_code == 'GBP':
+            currency_code = '£'
+        else:
+            currency_code += ' '
 
-            # lease_id = create_lease(
-            #     producers_legal_name='Vincent Chapman-Andrews', # Update Model so that I get added by default, and then if any featured artists are specified they get added too.
-            #     producers_professional_name='Vince Maina',
-            #     artists_legal_name=artists_legal_name,
-            #     artists_professional_name=artists_professional_name,
-            #     beat_name=video.video_beat_name,
-            #     youtube_link=f'https://youtu.be/{video_id}', # FIX
-            #     composer_legal_name='Vincent Chapman-Andrews',
-            #     beat_price= currency_code + amount_paid, # FIX - SHOULD MATCH WHAT IS IN THE PAYPAL ORDER RECIEPT.
-            #     order_id=order_id
-            # )
+        video_id = response.result.purchase_units[0]['payments']['captures'][0]['custom_id']
 
-            # send_confirmation_email(
-            #     order_id = order_id,
-            #     beat_name = video.video_beat_name,
-            #     video_title = video.video_title,
-            #     recipient_address = 'vince@elevatecopy.com', # UPDATE THIS TO USE ACTUAL ADDRESS FROM PAYPAL ORDER
-            #     lease_id = lease_id
-            # )
+        from .. db import get_db
 
-            lease_id='test'
+        with current_app.app_context():
 
-            return redirect(url_for('paypal.receipt', order_id=order_id, lease_id=lease_id))
+            db = get_db()
+            cursor = db.cursor()
 
-        except IOError as ioe:
-            if isinstance(ioe, HttpError):
-                # Something went wrong server-side i.e. Paypal's end
-                print('Something went wrong on Paypal\'s end.')
-                print(ioe.status_code)
-                print(ioe.headers)
-                print(ioe)
-                return 'Error 001: Payment error. Please contact site owner.'
-            else:
-                # Something went wrong client side
-                print('Something went wrong client side')
-                print(ioe)
-                return "Form already completed. The link to get back to the receipt page is included in the purchase confirmation email."
+            data = cursor.execute('SELECT title, beat_name FROM video WHERE id = ?', (video_id,)).fetchone()
+            title, beat_name = data
 
-    return render_template('lease_form.html')
+        from .. google_api.docs import create_lease
 
+        lease_id = create_lease(
+            producers_legal_name='Vincent Chapman-Andrews', # Update Model so that I get added by default, and then if any featured artists are specified they get added too.
+            producers_professional_name='Vince Maina',
+            beat_name=beat_name,
+            youtube_link=f'https://youtu.be/{video_id}',
+            composer_legal_name='Vincent Chapman-Andrews',
+            beat_price= currency_code + amount_paid,
+            order_id=order_id,
+            payer_account_id=payer_id,
+            payer_email=email_address,
+            payer_name=full_name
+        )
 
-@bp.route('/<order_id>/<lease_id>/receipt', methods=['GET', 'POST'])
-def receipt(order_id, lease_id):
+        # Sends the customer a confirmation email
 
-    request = OrdersGetRequest(order_id)
-    response = client.execute(request)
+        from .. google_api.mail import send_confirmation_email
+        send_confirmation_email(
+            order_id = order_id,
+            beat_name = beat_name,
+            video_title = title,
+            recipient_address = 'vince@elevatecopy.com', # UPDATE THIS TO USE ACTUAL ADDRESS FROM PAYPAL ORDER
+            lease_id = lease_id
+        )
 
-    video_id = response.result.purchase_units[0]['custom_id']
+        return redirect(url_for('receipt.receipt', order_id=order_id, lease_id=lease_id))
 
-    return 'reached reciept page'
-        
-    # video = Videos.query.get(video_id)
-    # video_beat_name = video.video_beat_name
-
-    # stems, mixdowns = fetch_beat_files(video_beat_name)
-
-    # from drive import return_links
-    # link_for_stems, link_for_mixdown = return_links(video_beat_name) 
-
-    # from flask import request
-
-    # if request.method == 'POST':
-    #     # if request.form['submit'] == 'mixdowns':
-    #     #     return download_all_files(video_beat_name, mixdowns, 'mixdowns')
-    #     # elif request.form['submit'] == 'stems':
-    #     #     return download_all_files(video_beat_name, stems, 'stems')
-    #     if request.form['submit'] == 'lease':
-    #         return export_lease(lease_id, f'Licence - {video_beat_name} ({order_id}).pdf')
-    # else:
-    #     return render_template('receipt.html', order_id=order_id, video=video, stems=stems, mixdowns=mixdowns, link_for_stems=link_for_stems, link_for_mixdown=link_for_mixdown)
-
+    except IOError as ioe:
+        if isinstance(ioe, HttpError):
+            # Something went wrong server-side i.e. Paypal's end
+            print('Something went wrong on Paypal\'s end.')
+            print(ioe.status_code)
+            print(ioe.headers)
+            print(ioe)
+            return 'Error 001: Payment error. Please contact site owner.'
+        else:
+            # Something went wrong client side
+            print('Something went wrong client side')
+            print(ioe)
+            return "Form already completed. The link to get back to the receipt page is included in the purchase confirmation email."

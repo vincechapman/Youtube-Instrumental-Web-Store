@@ -41,21 +41,20 @@ def create_app(test_config=None):
         return redirect(url_for('beats.beat_library'))
 
 
-    from . import beats
+    # REGISTERING BLUEPRINTS
+
+    from . server import beats
     app.register_blueprint(beats.bp)
     # app.add_url_rule('/', endpoint='beat_library')
 
-
-    from . import admin
+    from . server import admin
     app.register_blueprint(admin.bp)
-
 
     from . paypal import processing_orders
     app.register_blueprint(processing_orders.bp)
 
-
-    from . import test_cron
-    app.register_blueprint(test_cron.bp)
+    from . server import receipt
+    app.register_blueprint(receipt.bp)
 
 
     return app

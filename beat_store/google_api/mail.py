@@ -19,13 +19,14 @@ MY MODULES'''
 from . credentials import creds
 
 sender_address = 'vchapandrews@gmail.com'
-from . import get_domain
 
 def send_confirmation_email(order_id, beat_name, video_title, recipient_address, lease_id):
 
     try:
         service = build('gmail', 'v1', credentials=creds)
         message = EmailMessage()
+
+        from .. import get_domain
 
         body = \
             f"Order ID: {order_id}\n\nBeat: {beat_name}\nVideo name: {video_title}\n\nDownload your files and lease agreement here: {get_domain()}/{order_id}/{lease_id}/receipt\n\nFeel free to reply directly to this email if you have any questions!\n\n— Vince"

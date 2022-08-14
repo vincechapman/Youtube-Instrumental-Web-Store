@@ -37,7 +37,7 @@ def beat_library():
 @bp.route('/<video_id>')
 def beat(video_id):
 
-    from . db import get_db
+    from .. db import get_db
     db = get_db()
     cursor = db.cursor()
 

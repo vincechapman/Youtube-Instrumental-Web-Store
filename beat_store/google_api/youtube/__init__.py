@@ -114,7 +114,7 @@ def get_videos():
             db.commit()
         
 
-from .. import pafy_modified
+from . import pafy_modified
 import requests
 
 def get_audio_url(video_id):
@@ -185,9 +185,11 @@ def get_all_audio_urls():
 
 def add_uploads_to_database():
 
+    import redis
     from rq import Queue
-    from .. worker import conn
 
+    redis_url = os.getenv('REDIS_URL', 'redis://localhost:6379')
+    conn = redis.from_url(redis_url)
     q = Queue(connection=conn)
 
     jobs = q.enqueue_many(

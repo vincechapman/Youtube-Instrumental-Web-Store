@@ -7,14 +7,10 @@ bp = Blueprint('admin', __name__, url_prefix='/admin')
 def update_database():
 
     if request.method == 'POST':
-        # from . youtube import add_uploads_to_database
-        from . import youtube
-        # youtube.get_videos()
-        # youtube.get_all_audio_urls()
+        from .. google_api import youtube
         youtube.add_uploads_to_database()
-            
   
-    from . db import get_db
+    from .. db import get_db
 
     db = get_db()
 

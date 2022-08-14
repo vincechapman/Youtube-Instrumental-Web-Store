@@ -1,18 +1,3 @@
-# Copyright 2018 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# [START docs_quickstart]
 from __future__ import print_function
 
 from datetime import datetime
@@ -26,23 +11,24 @@ from googleapiclient.discovery import build
 
 from flask import send_file
 
+from . credentials import creds
 
-'''---------------------------
-MY MODULES'''
-
-from credentials import creds
-from drive import drive_service, download_file
-from config import lease_price
-
+drive_service = build('drive', 'v3', credentials=creds)
 
 LEASE_TEMPLATE_ID = '1Eny9AaVXVbFvAljb2rD47pP6exeuzvPgoeW5gep-0BY'
 LEASE_FOLDER_ID = '1iVlkZ_JQXaPvFpQLxYM0267_oym2UkEu'
 
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+LEASE_PRICE = os.environ['STANDARD_LEASE_PRICE']
+
 docs_service = build('docs', 'v1', credentials=creds)
 
-def copy_lease_template(beat_name, artist_name, order_id):
+def copy_lease_template(beat_name, artist, order_id):
     
-    copy_title = f'{artist_name} - {beat_name} - Licence (Non-Exclusive) - {order_id}'
+    copy_title = f'{artist} - {beat_name} - Licence (Non-Exclusive) - {order_id}'
     
     body = {
         'name': copy_title,
@@ -55,8 +41,8 @@ def copy_lease_template(beat_name, artist_name, order_id):
     
     return document_copy_id
 
-def create_lease(producers_legal_name, producers_professional_name, artists_legal_name, artists_professional_name, beat_name, youtube_link, composer_legal_name, beat_price, order_id):
-    document_id = copy_lease_template(beat_name, artists_professional_name, order_id)
+def create_lease(producers_legal_name, producers_professional_name, beat_name, youtube_link, composer_legal_name, beat_price, order_id, payer_email, payer_account_id, payer_name):
+    document_id = copy_lease_template(beat_name, payer_name, order_id)
     document = docs_service.documents().batchUpdate(
         documentId = document_id,
         body = {
@@ -85,16 +71,25 @@ def create_lease(producers_legal_name, producers_professional_name, artists_lega
                             "matchCase": "False",
                             "text": "[[artists legal name]]" # Text to replace
                         },
-                        "replaceText": artists_legal_name # Text to replace it with
+                        "replaceText": payer_name # Text to replace it with
                     }
                 },
                 {
                     "replaceAllText": {
                         "containsText": {
                             "matchCase": "False",
-                            "text": "[[artists professional name]]" # Text to replace
+                            "text": "[[paypal_id]]" # Text to replace
                         },
-                        "replaceText": artists_professional_name # Text to replace it with
+                        "replaceText": payer_account_id # Text to replace it with
+                    }
+                },
+                {
+                    "replaceAllText": {
+                        "containsText": {
+                            "matchCase": "False",
+                            "text": "[[artist_email]]" # Text to replace
+                        },
+                        "replaceText": payer_email # Text to replace it with
                     }
                 },
                 {
@@ -187,6 +182,6 @@ if __name__ == '__main__':
             beat_name='Maida Vale',
             youtube_link='https://www.youtube.com/watch?v=uBXpY1gE4xU&ab_channel=VinceMaina',
             composer_legal_name='Vincent Chapman-Andrews',
-            beat_price='£' + lease_price
+            beat_price='£' + LEASE_PRICE
         )
     ))
