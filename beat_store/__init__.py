@@ -26,19 +26,13 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    # a simple page that says hello
-    @app.route('/hello')
-    def hello():
-        return 'Hello, World!'
-    
-
-    from . import db
-    db.init_app(app)
-
-    @app.route('/')
+    @app.route('/home')
     def home():
         from flask import redirect, url_for
         return redirect(url_for('beats.beat_library'))
+
+    from . import db
+    db.init_app(app)
 
 
     # REGISTERING BLUEPRINTS
