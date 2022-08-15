@@ -54,7 +54,14 @@ def login():
                         user = User(id, username, email, password)
                         login_user(user, remember=remember)
 
-                        return redirect(url_for('profile'))
+                        next = request.args.get('next')
+
+                        from . is_safe_url import is_safe_url
+                        
+                        if not is_safe_url(next):
+                            return abort(400)
+                        
+                        return redirect(next or url_for('profile'))
 
                     raise Exception('Password incorrect, please try again.')
                 
@@ -90,12 +97,23 @@ def signup():
 
             # create a new user with the form data. Hash the password so the plaintext version isn't saved.
             cursor.execute('''
-                INSERT INTO user (username, email, password)
-                VALUES (?, ?, ?)
-                ''', (username, email, generate_password_hash(password, method='sha256')))
+                INSERT INTO user (username, password)
+                VALUES (?, ?)
+                ;''', (username, generate_password_hash(password, method='sha256')))
+
+            if email:
+
+                # Add step here to check if email is valid.
+
+                cursor.execute('''
+                    UPDATE user
+                    SET email = ?
+                    WHERE username = ?
+                    ;''', (email, username))
 
             # add the new user to the database
             db.commit()
+
 
         return redirect(url_for('auth.login'))
 

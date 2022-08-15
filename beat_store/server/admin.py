@@ -1,10 +1,16 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask_login import login_required, current_user
 
 bp = Blueprint('admin', __name__, url_prefix='/admin')
 
 
 @bp.route('/fetchvideos', methods=['GET', 'POST'])
+@login_required
 def update_database():
+
+    if current_user.username.lower() not in ('admin', 'eventbridge'):
+        flash("You are not authorised to access that page.")
+        return redirect(url_for('home'))
 
     if request.method == 'POST':
 
@@ -27,7 +33,6 @@ def update_database():
             Queue.prepare_data(make_changes_live, job_id='MAKE CHANGES LIVE')
         ]
         )
-
 
     from .. db import get_db
 
