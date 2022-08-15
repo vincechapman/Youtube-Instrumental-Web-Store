@@ -37,19 +37,19 @@
         {% endif %}
 
         {% if i.link_to_mixdowns %}
-        <td>True</td>
+        <td><a href="https://drive.google.com/drive/folders/{{i.link_to_mixdowns}}?usp=sharing" target="_blank">{{i.link_to_mixdowns}}</a></td>
         {% else %}
         <td></td>
         {% endif %}
 
         {% if i.link_to_stems %}
-        <td>True</td>
+        <td><a href="https://drive.google.com/drive/folders/{{i.link_to_stems}}?usp=sharing" target="_blank">{{i.link_to_stems}}</a></td>
         {% else %}
         <td></td>
         {% endif %}
 
         {% if i.link_to_video_audio %}
-        <td>{{ i.link_to_video_audio }}</td>
+        <td><a href="{{i.link_to_video_audio}}" target="_blank">{{i.link_to_video_audio}}</a></td>
         {% else %}
         <td></td>
         {% endif %}
