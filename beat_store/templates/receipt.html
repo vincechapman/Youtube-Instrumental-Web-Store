@@ -14,11 +14,18 @@
 
 <div>
     {% if mixdown_folder %}
-        <a href="https://drive.google.com/drive/folders/{{mixdown_folder}}?usp=sharing" target="_blank">Download mixdowns</a>
+        <form action="https://drive.google.com/drive/folders/{{mixdown_folder}}?usp=sharing" method="get" target="_blank">
+            <input type="submit" value="Download mixdowns" name="submit">
+        </form>
     {% endif %}
     {% if stems_folder %}
-        <a href="https://drive.google.com/drive/folders/{{stems_folder}}?usp=sharing" target="_blank">Download stems</a>
+        <form action="https://drive.google.com/drive/folders/{{stems_folder}}?usp=sharing" method="get" target="_blank">
+            <input type="submit" value="Download stems" name="submit">
+        </form>
     {% endif %}
+        <form action="#" method="post">
+            <input type="submit" value="Download lease" name="submit">
+        </form>
 </div>
 
 {% endblock %}

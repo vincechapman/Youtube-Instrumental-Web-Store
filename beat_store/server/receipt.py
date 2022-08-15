@@ -36,5 +36,13 @@ def receipt(order_id, lease_id):
         print('\n\n')
 
     from flask import request
+    from .. google_api.docs import export_lease
+    if request.method == 'POST':
+        # if request.form['submit'] == 'mixdowns':
+        #     return download_all_files(video_beat_name, mixdowns, 'mixdowns')
+        # elif request.form['submit'] == 'stems':
+        #     return download_all_files(video_beat_name, stems, 'stems')
+        if request.form['submit'] == 'Download lease':
+            return export_lease(lease_id, f'Licence - {beat_name} ({order_id}).pdf')
 
     return render_template('receipt.html', order_id=order_id, stems_folder=stems_folder, mixdown_folder=mixdown_folder, beat_name=beat_name, title=title, id=id)
