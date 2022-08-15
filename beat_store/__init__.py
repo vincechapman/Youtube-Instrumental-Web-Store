@@ -26,20 +26,26 @@ def create_app(test_config=None):
     except OSError:
         pass
 
+    from . import db
+    db.init_app(app)
+
+
+    # SETTING UP HOMEPAGE
+
+    homepage = 'beats.beat_library'
+
+    app.add_url_rule('/', endpoint=homepage)
+
     @app.route('/home')
     def home():
         from flask import redirect, url_for
-        return redirect(url_for('beats.beat_library'))
-
-    from . import db
-    db.init_app(app)
+        return redirect(url_for(homepage))
 
 
     # REGISTERING BLUEPRINTS
 
     from . server import beats
     app.register_blueprint(beats.bp)
-    # app.add_url_rule('/', endpoint='beat_library')
 
     from . server import admin
     app.register_blueprint(admin.bp)
