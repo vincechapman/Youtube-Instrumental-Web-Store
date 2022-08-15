@@ -8,6 +8,6 @@ CREATE TABLE video (
     description TEXT,
     beat_name VARCHAR(100),
     tags TEXT,
-    link_to_mixdowns TEXT,
-    link_to_stems TEXT,
+    mixdown_folder TEXT,
+    stems_folder TEXT,
     link_to_video_audio TEXT);
