@@ -2,7 +2,9 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-from flask import Flask
+from flask import Flask, render_template
+
+from flask_login import login_required, current_user
 
 
 def create_app(test_config=None):
@@ -30,6 +32,41 @@ def create_app(test_config=None):
     db.init_app(app)
 
 
+    # TEST PAGE FOR LOGINS
+
+    @app.route('/profile')
+    @login_required
+    def profile():
+        return render_template('auth/profile.html', name=current_user.username)
+
+
+    # SETTING UP LOGIN MANAGER
+
+    from flask_login import LoginManager
+    login_manager = LoginManager()
+    login_manager.login_view = 'auth.login'
+    login_manager.init_app(app)
+
+    from . server.auth import User
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        
+        from . db import get_db
+        db = get_db()
+        cursor = db.cursor()
+
+        row_data = cursor.execute('SELECT id, username, email, password FROM user WHERE id = ?', (user_id,)).fetchone()
+
+        if row_data:
+            id, username, email, password = row_data
+            user = User(id, username, email, password)
+        else:
+            user = None
+
+        return user
+
+
     # SETTING UP HOMEPAGE
 
     homepage = 'beats.beat_library'
@@ -55,6 +92,9 @@ def create_app(test_config=None):
 
     from . server import receipt
     app.register_blueprint(receipt.bp)
+
+    from . server import auth
+    app.register_blueprint(auth.bp)
 
 
     return app
