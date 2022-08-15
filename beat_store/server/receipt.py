@@ -20,7 +20,7 @@ def receipt(order_id, lease_id):
         cursor = db.cursor()
 
         data = cursor.execute("SELECT * FROM video WHERE id = ?", (video_id,)).fetchone()
-        id, title, published_at, thumbnail, description, beat_name, tags, link_to_mixdown, link_to_stems, link_to_video_audio = data
+        id, title, published_at, thumbnail, description, beat_name, tags, mixdown_folder, stems_folder, link_to_video_audio = data
 
         print('\n\n')
         print(f'\nID: {id}')
@@ -30,11 +30,11 @@ def receipt(order_id, lease_id):
         print(f'\nDESCRIPTION: {description}')
         print(f'\nBEAT NAME: {beat_name}')
         print(f'\nTAGS: {tags}')
-        print(f'\nLINK TO MIXDOWN: {link_to_mixdown}')
-        print(f'\nLINK TO STEMS: {link_to_stems}')
+        print(f'\nLINK TO MIXDOWN: {mixdown_folder}')
+        print(f'\nLINK TO STEMS: {stems_folder}')
         print(f'\nLINK TO AUDIO: {link_to_video_audio}')
         print('\n\n')
 
     from flask import request
 
-    return render_template('receipt.html', order_id=order_id, link_to_stems=link_to_stems, link_to_mixdown=link_to_mixdown, beat_name=beat_name, title=title, id=id)
+    return render_template('receipt.html', order_id=order_id, stems_folder=stems_folder, mixdown_folder=mixdown_folder, beat_name=beat_name, title=title, id=id)

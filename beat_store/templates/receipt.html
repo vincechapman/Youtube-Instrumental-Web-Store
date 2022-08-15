@@ -13,11 +13,11 @@
 <iframe width="560" height="315" src="https://www.youtube.com/embed/{{id}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 <div>
-    {% if link_to_mixdown %}
-        <a href="{{link_to_mixdown}}" target="_blank">Download mixdowns</a>
+    {% if mixdown_folder %}
+        <a href="https://drive.google.com/drive/folders/{{mixdown_folder}}?usp=sharing" target="_blank">Download mixdowns</a>
     {% endif %}
-    {% if link_to_stems %}
-        <a href="{{link_to_stems}}" target="_blank">Download stems</a>
+    {% if stems_folder %}
+        <a href="https://drive.google.com/drive/folders/{{stems_folder}}?usp=sharing" target="_blank">Download stems</a>
     {% endif %}
 </div>
 
