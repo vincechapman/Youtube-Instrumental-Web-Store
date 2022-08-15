@@ -26,7 +26,29 @@ def init_db():
     db = get_db()
 
     with current_app.open_resource('db/schema.sql') as f:
+
         db.executescript(f.read().decode('utf8'))
+        
+        import os
+        from dotenv import load_dotenv
+        load_dotenv()
+
+        preset_users = {
+            'admin': os.environ['ADMIN_PASSWORD'],
+            'EventBridge': os.environ['EVENTBRIDGE_PASSWORD']
+        }
+
+        cursor = db.cursor()
+
+        from werkzeug.security import generate_password_hash
+
+        for username in dict.keys(preset_users):
+            cursor.execute('''
+                INSERT INTO user (username, password)
+                    VALUES (?, ?)
+                ;''', (username, generate_password_hash(preset_users[username], method='sha256')))
+
+        db.commit()
 
 
 @click.command('init-db')
