@@ -5,14 +5,14 @@ bp = Blueprint('admin', __name__, url_prefix='/admin')
 
 
 @bp.route('/fetchvideos', methods=['GET', 'POST'])
-@login_required
+# @login_required
 def update_database():
 
-    if current_user.username.lower() not in ('admin', 'eventbridge'):
-        flash("You are not authorised to access that page.")
-        return redirect(url_for('home'))
+    # if current_user.username.lower() not in ('admin', 'eventbridge'):
+    #     flash("You are not authorised to access that page.")
+    #     return redirect(url_for('home'))
 
-    if request.method == 'POST' or current_user.username.lower() == 'eventbridge':
+    if request.method == 'POST':
 
         import os
         import redis
