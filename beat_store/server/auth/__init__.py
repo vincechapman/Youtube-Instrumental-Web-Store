@@ -92,7 +92,7 @@ def signup():
             user = cursor.execute('SELECT id FROM user WHERE username == ?', (username,)).fetchone() # if this returns an id, then the user already exists in database
         
             if user: # if a user is found, we want to redirect back to signup page so user can try again
-                flash('Email address already exists')
+                flash('Account already exists')
                 return redirect(url_for('auth.signup'))
 
             # create a new user with the form data. Hash the password so the plaintext version isn't saved.
