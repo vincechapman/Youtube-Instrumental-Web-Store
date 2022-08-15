@@ -63,7 +63,7 @@ def update_database():
     return render_template('update_database.html', videos=videos)
 
 # This allows EventBridge to sign in automatically.
-@bp.route('/eventbridge_refresh_database')
+@bp.route('/eventbridge_refresh_database', methods=['GET', 'POST'])
 def eventbridge_refresh_database():
 
     if request.authorization:
