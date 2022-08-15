@@ -61,3 +61,31 @@ def update_database():
         videos.append(new_video)
     
     return render_template('update_database.html', videos=videos)
+
+# This allows EventBridge to sign in automatically.
+@bp.route('/eventbridge_refresh_database')
+def eventbridge_refresh_database():
+
+    if request.authorization:
+
+        username = request.authorization.username
+        password = request.authorization.password
+
+        import os
+        from dotenv import load_dotenv
+        load_dotenv()
+
+        if username.lower() == 'eventbridge' and password == os.environ['EVENTBRIDGE_PASSWORD']:
+            
+            update_database()
+
+            message = 'EventBridge triggered database refresh.'
+            print(message)
+            
+            return message
+
+    else:
+        
+        message = 'request.authorization returned None.'
+        print(message)
+        return message

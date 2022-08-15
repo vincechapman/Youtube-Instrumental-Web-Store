@@ -22,17 +22,9 @@ def login():
     
     if request.method == 'POST':
 
-        # This allows EventBridge to sign in automatically.
-        if request.authorization:
-            username = request.authorization.username
-            password = request.authorization.password
-            remember = False
-
-        # This is for everyone else.
-        else:
-            username = request.form.get('username')
-            password = request.form.get('password')
-            remember = True if request.form.get('remember') else False
+        username = request.form.get('username')
+        password = request.form.get('password')
+        remember = True if request.form.get('remember') else False
 
 
         with current_app.app_context():
