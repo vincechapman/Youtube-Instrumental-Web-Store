@@ -12,11 +12,13 @@ youtube = build('youtube', 'v3', developerKey=os.environ['YOUTUBE_API_KEY'])
 channel_id = os.environ['YOUTUBE_CHANNEL_ID']
 uploads_id = channel_id[0] + 'U' + channel_id[2:]
 
+
 import sqlite3
 
 db = sqlite3.connect(
     'instance/flaskr.sqlite',
     detect_types=sqlite3.PARSE_DECLTYPES)
+
 
 def get_video_ids():
     
@@ -50,6 +52,7 @@ def get_video_ids():
     
     return video_id_list
 
+
 def process_description(video_description, search_key):
     
     delimiter = '|'
@@ -63,6 +66,7 @@ def process_description(video_description, search_key):
                 temp = temp[0]
                
     return str(temp)
+
 
 def get_videos():
 
@@ -112,12 +116,12 @@ def get_videos():
                 VALUES (?, ?, ?, ?, ?, ?, ?);""", (video_id, title, published_at, thumbnail, description, beat_name, tags))
 
             db.commit()
-        
 
-from . import pafy_modified
-import requests
 
 def get_audio_url(video_id):
+
+    from . import pafy_modified
+    import requests
 
     print(f'\nFetching audio for {video_id}...')
 
@@ -140,7 +144,7 @@ def get_audio_url(video_id):
     return audio_url
 
 
-def get_all_audio_urls():
+def get_audio_links():
 
     cursor = db.cursor()
 
@@ -159,48 +163,3 @@ def get_all_audio_urls():
             WHERE id = ?;""", (get_audio_url(id), id))
     
     db.commit()
-
-
-# def get_files():
-
-#     beat_folder_id = return_directory(start_folder_id)
-
-#     for i in dict.keys(beat_folder_id):
-#         if 'Mixdown' in return_directory(beat_folder_id[i]):
-#             try:
-#                 video = Updated_videos.query.filter_by(video_beat_name=i).first()
-#                 video.beat_mixdowns = return_directory(beat_folder_id[i])['Mixdown']
-#                 db.session.commit()
-#             except:
-#                 db.session.rollback()
-#                 print('Error 1: Video not in database. Or other error.')
-#         if 'Stems' in return_directory(beat_folder_id[i]):
-#             try:
-#                 video = Updated_videos.query.filter_by(video_beat_name=i).first()
-#                 video.beat_stems = return_directory(beat_folder_id[i])['Stems']
-#                 db.session.commit()
-#             except:
-#                 db.session.rollback()
-#                 print('Error 2: Video not in database. Or other error.')
-
-def add_uploads_to_database():
-
-    import redis
-    from rq import Queue
-
-    redis_url = os.getenv('REDIS_URL', 'redis://localhost:6379')
-    conn = redis.from_url(redis_url)
-    q = Queue(connection=conn)
-
-    jobs = q.enqueue_many(
-    [
-        Queue.prepare_data(get_videos, job_id='get_videos'),
-        Queue.prepare_data(get_all_audio_urls, job_id='get_all_audio_urls'),
-        # Queue.prepare_data(get_files, job_id='get_files'),
-        # Queue.prepare_data(copy_to_Videos, job_id='copy_to_Videos')
-    ]
-    )
-
-if __name__ == '__main__':
-    get_videos()
-    get_all_audio_urls()
