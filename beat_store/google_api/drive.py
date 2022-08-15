@@ -146,7 +146,7 @@ def get_folder_ids():
             
             try:
                 mixdown_folder_id = return_directory(beat_folder_id[beat_name])['Mixdown']
-                cursor.execute('UPDATE video SET mixdown_folder = ? WHERE beat_name = ?', (mixdown_folder_id, beat_name))
+                cursor.execute('UPDATE video_hidden SET mixdown_folder = ? WHERE beat_name = ?', (mixdown_folder_id, beat_name))
             except:
                 print('Error 1: Video not in database. Or other error.')
             else:
@@ -157,7 +157,7 @@ def get_folder_ids():
             
             try:
                 stems_folder_id = return_directory(beat_folder_id[beat_name])['Stems']
-                cursor.execute('UPDATE video SET stems_folder = ? WHERE beat_name = ?', (stems_folder_id, beat_name))
+                cursor.execute('UPDATE video_hidden SET stems_folder = ? WHERE beat_name = ?', (stems_folder_id, beat_name))
             except:
                 db.session.rollback()
                 print('Error 2: Video not in database. Or other error.')

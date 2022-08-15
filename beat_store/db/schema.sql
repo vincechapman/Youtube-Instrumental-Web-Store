@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS video;
+DROP TABLE IF EXISTS video_hidden;
 
 CREATE TABLE video (
     id VARCHAR(20) PRIMARY KEY,
@@ -10,4 +11,5 @@ CREATE TABLE video (
     tags TEXT,
     mixdown_folder TEXT,
     stems_folder TEXT,
-    link_to_video_audio TEXT);
+    link_to_video_audio TEXT)
+;

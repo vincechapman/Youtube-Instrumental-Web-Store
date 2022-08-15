@@ -70,6 +70,27 @@ def process_description(video_description, search_key):
 
 def get_videos():
 
+    cursor = db.cursor()
+
+    # This ensures video_hidden doesn't already exists when we clone it in the next step.
+    cursor.execute('''
+        DROP TABLE IF EXISTS video_hidden
+        ;''')
+
+    # This creates a clone of video called video_hidden
+    cursor.execute('''
+        CREATE TABLE video_hidden AS
+            SELECT *
+            FROM video
+        ;''')
+
+    # This clears out any data that was copied over from video
+    cursor.execute('''
+        DELETE FROM video_hidden;
+        ''')
+
+    print('\nCreated video_hidden table (so database can be updated behind the scenes with minimal downtime on the live site.\n')
+
     video_id_list = get_video_ids()
 
     keep_looping = True
@@ -107,12 +128,8 @@ def get_videos():
             beat_name = process_description(video['snippet']['description'], 'Beat name')
             tags = process_description(video['snippet']['description'], 'Tags')
 
-            cursor = db.cursor()
-
-            cursor.execute('DELETE FROM video WHERE id = ?;', (video_id,))
-
             cursor.execute("""
-                INSERT INTO video (id, title, published_at, thumbnail, description, beat_name, tags)
+                INSERT INTO video_hidden (id, title, published_at, thumbnail, description, beat_name, tags)
                 VALUES (?, ?, ?, ?, ?, ?, ?);""", (video_id, title, published_at, thumbnail, description, beat_name, tags))
 
             db.commit()
@@ -148,7 +165,7 @@ def get_audio_links():
 
     cursor = db.cursor()
 
-    data = cursor.execute('SELECT id FROM video').fetchall()
+    data = cursor.execute('SELECT id FROM video_hidden').fetchall()
 
     # Formatting the data returned by SQLite
     video_id_list = []
@@ -158,8 +175,29 @@ def get_audio_links():
     # Adding/updating link_to_video_audio cells in table
     for id in video_id_list:
         cursor.execute("""
-            UPDATE video
+            UPDATE video_hidden
             SET link_to_video_audio = ?
             WHERE id = ?;""", (get_audio_url(id), id))
     
     db.commit()
+
+def make_changes_live():
+    
+    cursor = db.cursor()
+
+    cursor.execute("""
+        DELETE FROM video;
+        """)
+
+    cursor.execute("""
+        INSERT INTO video SELECT * FROM video_hidden;
+        """)
+
+    print('Refreshed video table with latest data.')
+
+    cursor.execute("DROP TABLE IF EXISTS video_hidden;")
+
+    print('Deleted video_hidden.')
+
+    db.commit()
+

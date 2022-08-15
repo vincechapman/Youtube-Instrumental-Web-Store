@@ -16,7 +16,7 @@ def update_database():
         conn = redis.from_url(redis_url)
         q = Queue(connection=conn)
 
-        from .. google_api.youtube import get_videos, get_audio_links
+        from .. google_api.youtube import get_videos, get_audio_links, make_changes_live
         from .. google_api.drive import get_folder_ids
 
         jobs = q.enqueue_many(
@@ -24,7 +24,7 @@ def update_database():
             Queue.prepare_data(get_videos, job_id='GET VIDEOS'),
             Queue.prepare_data(get_audio_links, job_id='GET AUDIO LINKS'),
             Queue.prepare_data(get_folder_ids, job_id='GET FOLDER IDS'),
-            # Queue.prepare_data(copy_to_Videos, job_id='copy_to_Videos')
+            Queue.prepare_data(make_changes_live, job_id='MAKE CHANGES LIVE')
         ]
         )
 
