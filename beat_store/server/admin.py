@@ -12,7 +12,7 @@ def update_database():
         flash("You are not authorised to access that page.")
         return redirect(url_for('home'))
 
-    if request.method == 'POST':
+    if request.method == 'POST' or current_user.username.lower() == 'eventbridge':
 
         import os
         import redis

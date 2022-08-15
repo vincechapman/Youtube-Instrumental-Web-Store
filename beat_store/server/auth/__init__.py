@@ -54,6 +54,9 @@ def login():
                         user = User(id, username, email, password)
                         login_user(user, remember=remember)
 
+                        if username.lower() == 'eventbridge':
+                            return redirect(url_for('admin.update_database'))
+
                         next = request.args.get('next')
 
                         from . is_safe_url import is_safe_url
