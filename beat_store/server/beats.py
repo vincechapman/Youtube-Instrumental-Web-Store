@@ -10,7 +10,7 @@ def beat_library():
     db = get_db()
     cursor = db.cursor()
 
-    data = cursor.execute('SELECT id, title, beat_name, tags, link_to_mixdowns, link_to_stems, link_to_video_audio, thumbnail FROM video').fetchall()
+    data = cursor.execute('SELECT id, title, beat_name, tags, mixdown_folder, stems_folder, link_to_video_audio, thumbnail FROM video').fetchall()
 
     class video():
         def __init__(self, id, title, beat_name, tags, link_to_mixdowns, link_to_stems, link_to_video_audio, thumbnail):
