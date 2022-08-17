@@ -8,6 +8,23 @@ body {
     font-family: 'Inconsolata', monospace;
 }
 
+body:before {
+    content: ' ';
+    display: block;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 1;
+    background: url('out.gif');
+    background-repeat: repeat;
+    background-position: 50% 0;
+    background-size: 100px;
+    mix-blend-mode: soft-light;
+    pointer-events:none;
+  }
+
 iframe {
     border-radius: 10px;
     width: calc(560px * 1.5);
