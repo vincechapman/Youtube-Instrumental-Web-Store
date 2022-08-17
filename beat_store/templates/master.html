@@ -19,8 +19,13 @@
 
 </head>
 
+<!-- <body onload="document.body.style.opacity='1'; document.body.style.opacity='1';"> -->
 <body>
 
+    <svg id="fader"></svg>
+
+    <svg id="grain-overlay"></svg>
+    
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category, message in messages %}
@@ -34,13 +39,15 @@
         {% endif %}
     {% endwith %}
     
-    <script src="https://kit.fontawesome.com/66d5817b83.js" crossorigin="anonymous"></script> <!--This might slow down page load times-->
-    
     <a href="{{url_for('home')}}">
         <img id="site-logo" src="/static/images/Screenshot-2021-08-28-010916-_1_-stroke-and-fill-svg.png" alt="logo">
     </a>
     
     {% block body %}{% endblock %}
+
+    <script src="https://kit.fontawesome.com/66d5817b83.js" crossorigin="anonymous"></script> <!--This might slow down page load times-->
+
+    <script src="{{url_for('static', filename='scripts/fade-out.js')}}" onload="fadeInPage()"></script>
 
 </body>
 

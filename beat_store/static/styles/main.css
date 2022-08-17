@@ -4,28 +4,67 @@ body {
         radial-gradient(circle, rgb(0, 25, 27), rgb(15, 3, 0)),
         black;
     text-align: center;
-    /* font-family: Calibri, sans-serif; */
+    margin: 0px;
+    padding: 2em 0 3em 0;
     font-family: 'Inconsolata', monospace;
 }
 
-body:before {
-    content: ' ';
-    display: block;
+#fader {
     position: fixed;
-    left: 0;
     top: 0;
-    width: 100%;
-    height: 100%;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    max-width: unset;
+    z-index: 999998;
+    pointer-events: none;
+    background: hsl(12, 100%, 2%);
+    animation-duration: 300ms;
+    animation-timing-function: ease-in-out;
+}
+
+@keyframes fade-out {
+    from { opacity: 1 }
+      to { opacity: 0 }
+}
+
+@keyframes fade-in {
+    from { opacity: 0 }
+      to { opacity: 1 }
+}
+
+#fader.fade-out {
+    opacity: 0;
+    animation-name: fade-out;
+}
+
+#fader.fade-in {
+    opacity: 1;
+    animation-name: fade-in;
+}
+
+
+
+#grain-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    max-width: unset;
+    z-index: 999999;
+    pointer-events: none;
     opacity: 1;
     background: url('out.gif');
     background-repeat: repeat;
-    background-position: 50% 0;
     background-size: 100px;
     mix-blend-mode: soft-light;
-    pointer-events:none;
-  }
+}
 
-iframe {
+
+#youtube-embed {
     border-radius: 10px;
     width: calc(560px * 1.5);
     height: calc(315px * 1.5);
