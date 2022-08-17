@@ -8,6 +8,9 @@
 {% endblock %}
 
 {% block body %}
+
+<svg id="paypal-fader" style="display: none;"></svg>
+
 <h1>{{video.title}}</h1>
 <h2>{{video.beat_name}}</h2>
 <div>
@@ -24,7 +27,6 @@
   Contact me if you need the Stems
   {% endif %}
 </div>
-<!-- <iframe id="youtube-embed" src="https://www.youtube.com/embed/{{video.id}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> -->
 
 <div id="youtube-embed">
   <div style="position: relative; padding-bottom: 56.15%; height: 0; overflow: hidden;">
@@ -77,12 +79,11 @@
 
 
 <form action="{{url_for('paypal.create_order', video_id=video.id, video_title=video.title)}}">
-  <button type="submit" onClick="this.form.submit(); this.disabled=true;">Purchase</button>
+  <button class="purchase-button" type="submit" onClick="this.form.submit(); this.disabled=true;">Purchase</button>
 </form>
 
 <p>{{video.description}}</p>
 
-<!-- <script>
-  pageLoaded()
-</script> -->
+<script src="{{url_for('static', filename='js/paypal-fadeout.js')}}" onload="fadeInPage()"></script>
+
 {% endblock %}

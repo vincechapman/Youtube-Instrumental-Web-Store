@@ -3,6 +3,9 @@
 {% block title %}RECEIPT{% endblock %} <!-- Confirm this is working -->
 
 {% block body %}
+
+<svg id="paypal-fader"></svg>
+
 <h1>RECEIPT</h1>
 <h3>Thank you for your order!</h3>
 <div>Order ID: {{order_id}}</div>
@@ -10,7 +13,49 @@
 <h2>You purchased:</h2>
 <h3>{{beat_name}}</h3>
 <h4>{{title}}</h4>
-<iframe width="560" height="315" src="https://www.youtube.com/embed/{{id}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+<div id="youtube-embed">
+    <div style="position: relative; padding-bottom: 56.15%; height: 0; overflow: hidden;">
+        <iframe style="position: absolute; top: 0; left:0; width: 100%; height: 100%; border: 0; border-radius: 10px;"
+            loading="lazy" ; srcdoc="<style>
+          * {
+          padding: 0;
+          margin: 0;
+          overflow: hidden;
+          }
+          
+          body, html {
+            height: 100%;
+          }
+          
+          img, svg {
+            position: absolute;
+            width: 100%;
+            top: 0;
+            bottom: 0;
+            margin: auto;
+          }
+          
+          svg {
+            filter: drop-shadow(1px 1px 10px hsl(206.5, 70.7%, 8%));
+            transition: all 250ms ease-in-out;
+          }
+          
+          body:hover svg {
+            filter: drop-shadow(1px 1px 10px hsl(206.5, 0%, 10%));
+            transform: scale(1.2);
+          }
+        </style>
+        <a href='https://www.youtube.com/embed/{{id}}?autoplay=1'>
+          <img src='https://i.ytimg.com/vi/{{id}}/maxresdefault.jpg' alt='Coffee Recipe Javascript Project' style='border-radius: 10px;'>
+          <svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 24 24' fill='none' stroke='#ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-play-circle'><circle cx='12' cy='12' r='10'></circle><polygon points='10 8 16 12 10 16 10 8'></polygon></svg>
+        </a>
+        " src="https://www.youtube.com/embed/{{id}}" title="Coffee Recipe Javascript Project" frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+        </iframe>
+    </div>
+</div>
 
 <div>
     {% if mixdown_folder %}
@@ -27,5 +72,7 @@
             <input type="submit" value="Download lease" name="submit">
         </form>
 </div>
+
+<script src="{{url_for('static', filename='js/paypal-fadeout.js')}}" onload="fadeInPage()"></script>
 
 {% endblock %}
