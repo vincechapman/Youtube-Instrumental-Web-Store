@@ -103,3 +103,27 @@ button {
         font-size: 4em;
     }
 }
+
+
+
+/* Scroll bars */
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+background: #1f1f1f;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+background: rgb(77, 77, 77);
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+background: rgb(150, 150, 150);
+}
