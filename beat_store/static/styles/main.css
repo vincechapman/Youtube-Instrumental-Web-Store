@@ -105,6 +105,7 @@ body {
     border-radius: 10px;
     width: calc(560px * 1.5);
     height: calc(315px * 1.5);
+    margin: 3em auto;
 }
 
 #site-logo {
