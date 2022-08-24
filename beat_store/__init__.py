@@ -7,6 +7,12 @@ from flask import Flask, render_template
 from flask_login import login_required, current_user
 
 
+def get_domain():
+    from flask import request
+    domain = request.root_url[:-1]
+    return domain
+
+
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
@@ -76,6 +82,7 @@ def create_app(test_config=None):
     @app.route('/home')
     def home():
         from flask import redirect, url_for
+        print(f'Current domain: {get_domain()}')
         return redirect(url_for(homepage))
 
 
@@ -98,9 +105,3 @@ def create_app(test_config=None):
 
 
     return app
-
-
-def get_domain():
-    from flask import request
-    domain = request.root_url[:-1]
-    return domain
