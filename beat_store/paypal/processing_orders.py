@@ -132,16 +132,26 @@ def capture_order():
             payer_name=full_name
         )
 
-        # Sends the customer a confirmation email
+        # Changes email to one of my own email addresses, if running locally
+        from .. import get_domain
+        if '127.0.0.1' in get_domain():
+            email_address = 'vince@elevatecopy.com'
 
-        from .. google_api.mail import send_confirmation_email
-        send_confirmation_email(
-            order_id = order_id,
-            beat_name = beat_name,
-            video_title = title,
-            recipient_address = 'vince@elevatecopy.com', # UPDATE THIS TO USE ACTUAL ADDRESS FROM PAYPAL ORDER
-            lease_id = lease_id
-        )
+        print('CONFIRMATION sent to', email_address)
+
+        # Sends the customer a confirmation email
+        from .. email import send_confirmation_email
+        try:
+            send_confirmation_email(
+                order_id = order_id,
+                beat_name = beat_name,
+                video_title = title,
+                recipient_address = email_address,
+                lease_id = lease_id
+            )
+        except Exception as e:
+            print(e)
+            print('Email failed to send. Add proper exception handling for this.')
 
         return redirect(url_for('receipt.receipt', order_id=order_id, lease_id=lease_id))
 
