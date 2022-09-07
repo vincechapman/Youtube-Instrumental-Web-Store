@@ -2,7 +2,7 @@
 
 PLEASE NOTE, THIS IS NOT A FINISHED PROJECT.
 
-[Checkout the website here](https://vincemaina.herokuapp.com/)
+[Checkout the website here](https://vincemaina.co.uk)
 
 Goals:
 - [x] Automate the repetive aspects of my beat-selling business
